@@ -2,7 +2,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 CREATE TABLE `Pokemon` (
-    `id` int  NOT NULL ,
+    `id` int  NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255)  NOT NULL ,
     `type1` VARCHAR(255)  NOT NULL ,
     `type2` VARCHAR(255)  NULL ,
@@ -17,7 +17,7 @@ CREATE TABLE `Pokemon` (
 );
 
 CREATE TABLE `Routes` (
-    `id` int  NOT NULL ,
+    `id` int  NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255)  NOT NULL ,
     `accesLevel` int  NOT NULL ,
     PRIMARY KEY (
@@ -26,7 +26,7 @@ CREATE TABLE `Routes` (
 );
 
 CREATE TABLE `Trainer` (
-    `id` int  NOT NULL ,
+    `id` int  NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255)  NOT NULL ,
     `money` int  NOT NULL ,
     `point` int  NOT NULL ,
@@ -42,7 +42,7 @@ CREATE TABLE `pokemon_route` (
 );
 
 CREATE TABLE `pokemon_trainer` (
-    `id` int  NOT NULL ,
+    `id` int  NOT NULL AUTO_INCREMENT,
     `idPokemon` int  NOT NULL ,
     `idTrainer` int  NOT NULL ,
     `isShiny` bool  NOT NULL ,
@@ -52,7 +52,7 @@ CREATE TABLE `pokemon_trainer` (
 );
 
 CREATE TABLE `Pokeball` (
-    `id` int  NOT NULL ,
+    `id` int  NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255)  NOT NULL ,
     `buyingPrice` int  NOT NULL ,
     `sellPrice` int  NOT NULL ,
