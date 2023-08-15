@@ -1,63 +1,97 @@
--- phpMyAdmin SQL Dump
--- version 4.5.4.1deb2ubuntu2
--- http://www.phpmyadmin.net
---
--- Client :  localhost
--- Généré le :  Jeu 26 Octobre 2017 à 13:53
--- Version du serveur :  5.7.19-0ubuntu0.16.04.1
--- Version de PHP :  7.0.22-0ubuntu0.16.04.1
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
+CREATE TABLE `Pokemon` (
+    `id` int  NOT NULL ,
+    `name` VARCHAR(255)  NOT NULL ,
+    `type1` VARCHAR(255)  NOT NULL ,
+    `type2` VARCHAR(255)  NULL ,
+    `generation` int  NOT NULL ,
+    `img` VARCHAR(255)  NOT NULL ,
+    `sellPrice` int  NOT NULL ,
+    `catchRate` int  NOT NULL ,
+    `escapeRate` int  NOT NULL ,
+    PRIMARY KEY (
+        `id`
+    )
+);
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+CREATE TABLE `Routes` (
+    `id` int  NOT NULL ,
+    `name` VARCHAR(255)  NOT NULL ,
+    `accesLevel` int  NOT NULL ,
+    PRIMARY KEY (
+        `id`
+    )
+);
 
---
--- Base de données :  `simple-mvc`
---
+CREATE TABLE `Trainer` (
+    `id` int  NOT NULL ,
+    `name` VARCHAR(255)  NOT NULL ,
+    `money` int  NOT NULL ,
+    `point` int  NOT NULL ,
+    `level` int  NOT NULL ,
+    PRIMARY KEY (
+        `id`
+    )
+);
 
--- --------------------------------------------------------
+CREATE TABLE `pokemon_route` (
+    `idPokemon` int  NOT NULL ,
+    `idRoutes` int  NOT NULL 
+);
 
---
--- Structure de la table `item`
---
+CREATE TABLE `pokemon_trainer` (
+    `id` int  NOT NULL ,
+    `idPokemon` int  NOT NULL ,
+    `idTrainer` int  NOT NULL ,
+    `isShiny` bool  NOT NULL ,
+    PRIMARY KEY (
+        `id`
+    )
+);
 
-CREATE TABLE `item` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE `Pokeball` (
+    `id` int  NOT NULL ,
+    `name` VARCHAR(255)  NOT NULL ,
+    `buyingPrice` int  NOT NULL ,
+    `sellPrice` int  NOT NULL ,
+    PRIMARY KEY (
+        `id`
+    )
+);
 
---
--- Contenu de la table `item`
---
+CREATE TABLE `pokeball_trainer` (
+    `idPokeball` int  NOT NULL ,
+    `idTrainer` int  NOT NULL ,
+    `quantity` int  NOT NULL 
+);
 
-INSERT INTO `item` (`id`, `title`) VALUES
-(1, 'Stuff'),
-(2, 'Doodads');
+CREATE TABLE `route_trainer` (
+    `idRoute` int  NOT NULL ,
+    `idTrainer` int  NOT NULL 
+);
 
---
--- Index pour les tables exportées
---
+ALTER TABLE `pokemon_route` ADD CONSTRAINT `fk_pokemon_route_idPokemon` FOREIGN KEY(`idPokemon`)
+REFERENCES `Pokemon` (`id`);
 
---
--- Index pour la table `item`
---
-ALTER TABLE `item`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `pokemon_route` ADD CONSTRAINT `fk_pokemon_route_idRoutes` FOREIGN KEY(`idRoutes`)
+REFERENCES `Routes` (`id`);
 
---
--- AUTO_INCREMENT pour les tables exportées
---
+ALTER TABLE `pokemon_trainer` ADD CONSTRAINT `fk_pokemon_trainer_idPokemon` FOREIGN KEY(`idPokemon`)
+REFERENCES `Pokemon` (`id`);
 
---
--- AUTO_INCREMENT pour la table `item`
---
-ALTER TABLE `item`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+ALTER TABLE `pokemon_trainer` ADD CONSTRAINT `fk_pokemon_trainer_idTrainer` FOREIGN KEY(`idTrainer`)
+REFERENCES `Trainer` (`id`);
+
+ALTER TABLE `pokeball_trainer` ADD CONSTRAINT `fk_pokeball_trainer_idPokeball` FOREIGN KEY(`idPokeball`)
+REFERENCES `Pokeball` (`id`);
+
+ALTER TABLE `pokeball_trainer` ADD CONSTRAINT `fk_pokeball_trainer_idTrainer` FOREIGN KEY(`idTrainer`)
+REFERENCES `Trainer` (`id`);
+
+ALTER TABLE `route_trainer` ADD CONSTRAINT `fk_route_trainer_idRoute` FOREIGN KEY(`idRoute`)
+REFERENCES `Routes` (`id`);
+
+ALTER TABLE `route_trainer` ADD CONSTRAINT `fk_route_trainer_idTrainer` FOREIGN KEY(`idTrainer`)
+REFERENCES `Trainer` (`id`);
