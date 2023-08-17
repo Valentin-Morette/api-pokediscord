@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get("/pokemon", PokemonController.browse);
 router.get("/pokemon/:id", PokemonController.read);
-router.put("/pokemon/:id", PokemonController.edit);
 router.post("/pokemon", PokemonController.add);
+router.put("/pokemon/:id", PokemonController.edit);
 router.delete("/pokemon/:id", PokemonController.delete);
 
 module.exports = router;

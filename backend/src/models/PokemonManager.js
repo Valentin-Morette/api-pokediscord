@@ -5,8 +5,18 @@ class PokemonManager extends AbstractManager {
 
   insert(pokemon) {
     return this.connection.query(
-      `insert into ${PokemonManager.table} (title) values (?)`,
-      [pokemon.title]
+      `insert into ${PokemonManager.table} (id, name, type1, type2, generation, img, sellPrice, catchRate, escapeRate) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        pokemon.id,
+        pokemon.name,
+        pokemon.type1,
+        pokemon.type2,
+        pokemon.generation,
+        pokemon.img,
+        pokemon.sellPrice,
+        pokemon.catchRate,
+        pokemon.escapeRate,
+      ]
     );
   }
 
