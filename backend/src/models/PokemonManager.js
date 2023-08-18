@@ -22,8 +22,18 @@ class PokemonManager extends AbstractManager {
 
   update(pokemon) {
     return this.connection.query(
-      `update ${PokemonManager.table} set title = ? where id = ?`,
-      [pokemon.title, pokemon.id]
+      `update ${PokemonManager.table} set name = ?, type1 = ?, type2 = ?, generation = ?, img = ?, sellPrice = ?, catchRate = ?, escapeRate = ? where id = ?`,
+      [
+        pokemon.name,
+        pokemon.type1,
+        pokemon.type2,
+        pokemon.generation,
+        pokemon.img,
+        pokemon.sellPrice,
+        pokemon.catchRate,
+        pokemon.escapeRate,
+        pokemon.id,
+      ]
     );
   }
 }
