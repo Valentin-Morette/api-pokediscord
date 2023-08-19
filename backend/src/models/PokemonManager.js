@@ -1,7 +1,7 @@
 const AbstractManager = require("./AbstractManager");
 
 class PokemonManager extends AbstractManager {
-  static table = "Pokemon";
+  static table = "pokemon";
 
   insert(pokemon) {
     return this.connection.query(

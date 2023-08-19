@@ -1,8 +1,8 @@
 const models = require("../models");
 
-class PokemonController {
+class ZoneController {
   static browse = (req, res) => {
-    models.pokemon
+    models.zone
       .findAll()
       .then(([rows]) => {
         res.send(rows);
@@ -14,7 +14,7 @@ class PokemonController {
   };
 
   static read = (req, res) => {
-    models.pokemon
+    models.zone
       .find(req.params.id)
       .then(([rows]) => {
         if (rows[0] == null) {
@@ -30,12 +30,12 @@ class PokemonController {
   };
 
   static edit = (req, res) => {
-    const pokemon = req.body;
+    const zone = req.body;
 
-    pokemon.id = parseInt(req.params.id, 10);
+    zone.id = parseInt(req.params.id, 10);
 
-    models.pokemon
-      .update(pokemon)
+    models.zone
+      .update(zone)
       .then(([result]) => {
         if (result.affectedRows === 0) {
           res.sendStatus(404);
@@ -50,14 +50,14 @@ class PokemonController {
   };
 
   static add = (req, res) => {
-    const pokemon = req.body;
+    const zone = req.body;
 
     // TODO validations (length, format...)
 
-    models.pokemon
-      .insert(pokemon)
+    models.zone
+      .insert(zone)
       .then(([result]) => {
-        res.status(201).send({ ...pokemon, id: result.insertId });
+        res.status(201).send({ ...zone, id: result.insertId });
       })
       .catch((err) => {
         console.error(err);
@@ -66,7 +66,7 @@ class PokemonController {
   };
 
   static delete = (req, res) => {
-    models.pokemon
+    models.zone
       .delete(req.params.id)
       .then(() => {
         res.sendStatus(204);
@@ -78,4 +78,4 @@ class PokemonController {
   };
 }
 
-module.exports = PokemonController;
+module.exports = ZoneController;

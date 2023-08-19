@@ -2,7 +2,8 @@ const models = require("../models");
 
 class PokeballController {
   static browse = (req, res) => {
-    models.Pokeball.findAll()
+    models.pokeball
+      .findAll()
       .then(([rows]) => {
         res.send(rows);
       })
@@ -13,8 +14,8 @@ class PokeballController {
   };
 
   static read = (req, res) => {
-    console.warn(models);
-    models.Pokeball.find(req.params.id)
+    models.pokeball
+      .find(req.params.id)
       .then(([rows]) => {
         if (rows[0] == null) {
           res.sendStatus(404);
@@ -33,7 +34,8 @@ class PokeballController {
 
     pokeball.id = parseInt(req.params.id, 10);
 
-    models.Pokeball.update(pokeball)
+    models.pokeball
+      .update(pokeball)
       .then(([result]) => {
         if (result.affectedRows === 0) {
           res.sendStatus(404);
@@ -52,7 +54,8 @@ class PokeballController {
 
     // TODO validations (length, format...)
 
-    models.Pokeball.insert(pokeball)
+    models.pokeball
+      .insert(pokeball)
       .then(([result]) => {
         res.status(201).send({ ...pokeball, id: result.insertId });
       })
@@ -63,7 +66,8 @@ class PokeballController {
   };
 
   static delete = (req, res) => {
-    models.Pokeball.delete(req.params.id)
+    models.pokeball
+      .delete(req.params.id)
       .then(() => {
         res.sendStatus(204);
       })
