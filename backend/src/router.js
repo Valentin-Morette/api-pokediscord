@@ -4,6 +4,7 @@ const {
   PokemonController,
   ZoneController,
   PokeballController,
+  TrainerController,
 } = require("./controllers");
 
 const router = express.Router();
@@ -16,6 +17,12 @@ router.delete("/pokemon/:id", PokemonController.delete);
 
 router.get("/pokeball", PokeballController.browse);
 router.get("/pokeball/:id", PokeballController.read);
+
+router.get("/trainer", TrainerController.browse);
+router.get("/trainer/:id", TrainerController.read);
+router.post("/trainer", TrainerController.add);
+router.put("/trainer/:id", TrainerController.edit);
+router.delete("/trainer/:id", TrainerController.delete);
 
 router.get("/zone", ZoneController.browse);
 router.get("/zone/:id", ZoneController.read);
