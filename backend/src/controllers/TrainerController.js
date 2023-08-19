@@ -52,8 +52,6 @@ class TrainerController {
   static add = (req, res) => {
     const trainer = req.body;
 
-    // TODO validations (length, format...)
-
     models.trainer
       .insert(trainer)
       .then(([result]) => {
@@ -70,6 +68,22 @@ class TrainerController {
       .delete(req.params.id)
       .then(() => {
         res.sendStatus(204);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
+  static verifyIdDiscord = (req, res) => {
+    models.trainer
+      .verifyIdDiscord(req.params.idDiscord)
+      .then(([rows]) => {
+        if (rows[0] == null) {
+          res.status(200).send({ hasAccount: false });
+        } else {
+          res.status(200).send({ hasAccount: true });
+        }
       })
       .catch((err) => {
         console.error(err);
