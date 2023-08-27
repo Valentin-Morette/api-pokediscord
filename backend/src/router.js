@@ -16,6 +16,7 @@ router.get("/pokeball/:id", PokeballController.read);
 router.get("/pokemon", PokemonController.browse);
 router.get("/pokemon/:id", PokemonController.read);
 router.post("/pokemon", PokemonController.add);
+router.post("/pokemon/zone", PokemonController.findInZone);
 router.put("/pokemon/:id", PokemonController.edit);
 router.delete("/pokemon/:id", PokemonController.delete);
 

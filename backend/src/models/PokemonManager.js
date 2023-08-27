@@ -36,6 +36,13 @@ class PokemonManager extends AbstractManager {
       ]
     );
   }
+
+  findInZone(zoneName) {
+    return this.connection.query(
+      `select p.* from ${PokemonManager.table} as p inner join pokemon_zone as pz on p.id = pz.idPokemon inner join zone as z on pz.idZone = z.id where z.name = ?`,
+      [zoneName]
+    );
+  }
 }
 
 module.exports = PokemonManager;

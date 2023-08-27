@@ -51,13 +51,23 @@ class PokemonController {
 
   static add = (req, res) => {
     const pokemon = req.body;
-
-    // TODO validations (length, format...)
-
     models.pokemon
       .insert(pokemon)
       .then(([result]) => {
         res.status(201).send({ ...pokemon, id: result.insertId });
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
+  static findInZone = (req, res) => {
+    const zone = req.body.nameZone;
+    models.pokemon
+      .findInZone(zone)
+      .then(([rows]) => {
+        res.send(rows);
       })
       .catch((err) => {
         console.error(err);
