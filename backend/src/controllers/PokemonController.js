@@ -80,6 +80,10 @@ class PokemonController {
     models.pokemon
       .findInZone(zone)
       .then(([rows]) => {
+        if (rows.length === 0) {
+          res.send(rows);
+          return;
+        }
         const randomPokemonWild = rows[Math.floor(Math.random() * rows.length)];
         const pokemonWild = {
           idPokemon: randomPokemonWild.id,
