@@ -75,6 +75,39 @@ class PokemonController {
       });
   };
 
+  static addPokemonWild = (req, res) => {
+    const zone = req.body.nameZone;
+    models.pokemon
+      .findInZone(zone)
+      .then(([rows]) => {
+        const randomPokemonWild = rows[Math.floor(Math.random() * rows.length)];
+        const pokemonWild = {
+          idPokemon: randomPokemonWild.id,
+          isCatch: 0,
+          isEscape: 0,
+          catchCode: Math.floor(Math.random() * 100000),
+          dateAppear: new Date(),
+        };
+        models.pokemon_wild
+          .insert(pokemonWild)
+          .then(([result]) => {
+            res.status(201).send({
+              id: result.insertId,
+              catchCode: pokemonWild.catchCode,
+              ...randomPokemonWild,
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+            res.sendStatus(500);
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
   static delete = (req, res) => {
     models.pokemon
       .delete(req.params.id)
