@@ -1,8 +1,8 @@
 const models = require("../models");
 
-class TrainerController {
+class PokeballTrainerController {
   static browse = (req, res) => {
-    models.trainer
+    models.pokeballTrainer
       .findAll()
       .then(([rows]) => {
         res.send(rows);
@@ -14,7 +14,7 @@ class TrainerController {
   };
 
   static read = (req, res) => {
-    models.trainer
+    models.pokeballTrainer
       .find(req.params.id)
       .then(([rows]) => {
         if (rows[0] == null) {
@@ -30,12 +30,12 @@ class TrainerController {
   };
 
   static edit = (req, res) => {
-    const trainer = req.body;
+    const pokeballTrainer = req.body;
 
-    trainer.id = parseInt(req.params.id, 10);
+    pokeballTrainer.id = parseInt(req.params.id, 10);
 
-    models.trainer
-      .update(trainer)
+    models.pokeballTrainer
+      .update(pokeballTrainer)
       .then(([result]) => {
         if (result.affectedRows === 0) {
           res.sendStatus(404);
@@ -50,15 +50,14 @@ class TrainerController {
   };
 
   static add = (req, res) => {
-    const payload = req.body;
+    const pokeballTrainer = req.body;
 
-    models.trainer
-      .insert(payload.trainer)
+    // TODO validations (length, format...)
+
+    models.pokeballTrainer
+      .insert(pokeballTrainer)
       .then(([result]) => {
-        for (const pokeball of payload.ball) {
-          models.pokeball_trainer.insert(pokeball, payload.trainer.idDiscord);
-        }
-        res.status(201).send({ trainer: payload.trainer, id: result.insertId });
+        res.status(201).send({ ...pokeballTrainer, id: result.insertId });
       })
       .catch((err) => {
         console.error(err);
@@ -67,7 +66,7 @@ class TrainerController {
   };
 
   static delete = (req, res) => {
-    models.trainer
+    models.pokeballTrainer
       .delete(req.params.id)
       .then(() => {
         res.sendStatus(204);
@@ -77,22 +76,6 @@ class TrainerController {
         res.sendStatus(500);
       });
   };
-
-  static verifyIdDiscord = (req, res) => {
-    models.trainer
-      .verifyIdDiscord(req.params.idDiscord)
-      .then(([rows]) => {
-        if (rows[0] == null) {
-          res.status(200).send({ hasAccount: false });
-        } else {
-          res.status(200).send({ hasAccount: true });
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
-  };
 }
 
-module.exports = TrainerController;
+module.exports = PokeballTrainerController;
