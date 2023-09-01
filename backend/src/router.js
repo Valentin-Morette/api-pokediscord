@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.get("/pokeball", PokeballController.browse);
 router.get("/pokeball/:id", PokeballController.read);
+router.get("/pokeball/trainer/:id", PokeballController.readByTrainer);
 
 router.get("/pokemon", PokemonController.browse);
 router.get("/pokemon/:id", PokemonController.read);

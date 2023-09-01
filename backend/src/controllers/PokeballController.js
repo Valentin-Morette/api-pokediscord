@@ -29,6 +29,18 @@ class PokeballController {
       });
   };
 
+  static readByTrainer = (req, res) => {
+    models.pokeball
+      .findByTrainer(req.params.id)
+      .then(([rows]) => {
+        res.send(rows);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
   static edit = (req, res) => {
     const pokeball = req.body;
 
@@ -51,8 +63,6 @@ class PokeballController {
 
   static add = (req, res) => {
     const pokeball = req.body;
-
-    // TODO validations (length, format...)
 
     models.pokeball
       .insert(pokeball)
