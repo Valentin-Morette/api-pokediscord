@@ -19,6 +19,7 @@ router.get("/pokemon/:id", PokemonController.read);
 router.post("/pokemon", PokemonController.add);
 router.post("/pokemon/zone", PokemonController.findInZone);
 router.post("/pokemon/wild", PokemonController.addPokemonWild);
+router.post("/pokemon/catch", PokemonController.catchPokemon);
 router.put("/pokemon/:id", PokemonController.edit);
 router.delete("/pokemon/:id", PokemonController.delete);
 

@@ -10,10 +10,10 @@ class PokeballTrainerManager extends AbstractManager {
     );
   }
 
-  update(pokeballTrainer) {
+  updateQuantity(idBall, idTrainer) {
     return this.connection.query(
-      `update ${PokeballTrainerManager.table} set title = ? where id = ?`,
-      [pokeballTrainer.title, pokeballTrainer.id]
+      `update ${PokeballTrainerManager.table} set quantity = quantity - 1 WHERE idPokeball = ? AND idTrainer = ? AND quantity > 0`,
+      [idBall, idTrainer]
     );
   }
 }

@@ -112,6 +112,78 @@ class PokemonController {
       });
   };
 
+  static catchPokemon = (req, res) => {
+    const { catchCode } = req.body;
+    const { idTrainer } = req.body;
+    const { idBall } = req.body;
+    models.pokemon_wild
+      .getByCatchCode(catchCode)
+      .then(([result]) => {
+        if (result[0].isEscape === 1) {
+          res.status(201).send({ status: "alreadyEscape" });
+        } else if (result[0].isCatch === 1) {
+          res.status(201).send({ status: "alreadyCatch" });
+        } else {
+          models.pokeball_trainer
+            .updateQuantity(idBall, idTrainer)
+            .then(([resultUpdate]) => {
+              if (resultUpdate.affectedRows === 0) {
+                res.status(201).send({ status: "noBall" });
+              } else {
+                Promise.all([
+                  models.pokemon.find(result[0].idPokemon),
+                  models.pokeball.find(idBall),
+                ]).then(([pokemonResult, pokeballResult]) => {
+                  let catchChance = 0;
+                  let escapeChance = 0;
+                  catchChance += pokemonResult[0][0].catchRate;
+                  escapeChance += pokemonResult[0][0].escapeRate;
+                  catchChance += pokeballResult[0][0].catchBonus;
+
+                  const randomCatch = Math.floor(Math.random() * 100);
+
+                  if (randomCatch <= catchChance) {
+                    models.pokemon_trainer.insert({
+                      idPokemon: result[0].idPokemon,
+                      idTrainer,
+                      isShiny: 1,
+                    });
+                    models.pokemon_wild
+                      .updateByCatchCode(catchCode, 1, 0)
+                      .then(() => {
+                        res.status(201).send({ status: "catch" });
+                      })
+                      .catch((err) => {
+                        console.error(err);
+                        res.sendStatus(500);
+                      });
+                  } else if (
+                    randomCatch > catchChance &&
+                    randomCatch <= catchChance + escapeChance
+                  ) {
+                    models.pokemon_wild
+                      .updateByCatchCode(catchCode, 0, 1)
+                      .then(() => {
+                        res.status(201).send({ status: "escape" });
+                      })
+                      .catch((err) => {
+                        console.error(err);
+                        res.sendStatus(500);
+                      });
+                  } else {
+                    res.status(201).send({ status: "noCatch" });
+                  }
+                });
+              }
+            });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
   static delete = (req, res) => {
     models.pokemon
       .delete(req.params.id)

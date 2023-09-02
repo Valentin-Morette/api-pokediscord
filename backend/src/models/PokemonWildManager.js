@@ -16,20 +16,17 @@ class PokemonWildManager extends AbstractManager {
     );
   }
 
-  update(pokemonWild) {
+  getByCatchCode(catchCode) {
     return this.connection.query(
-      `update ${PokemonWildManager.table} set name = ?, type1 = ?, type2 = ?, generation = ?, img = ?, sellPrice = ?, catchRate = ?, escapeRate = ? where id = ?`,
-      [
-        pokemonWild.name,
-        pokemonWild.type1,
-        pokemonWild.type2,
-        pokemonWild.generation,
-        pokemonWild.img,
-        pokemonWild.sellPrice,
-        pokemonWild.catchRate,
-        pokemonWild.escapeRate,
-        pokemonWild.id,
-      ]
+      `select * from ${PokemonWildManager.table} where catchCode = ?`,
+      [catchCode]
+    );
+  }
+
+  updateByCatchCode(catchCode, isCatch, isEscape) {
+    return this.connection.query(
+      `update ${PokemonWildManager.table} set isCatch = ?, isEscape = ? where catchCode = ?`,
+      [isCatch, isEscape, catchCode]
     );
   }
 }
