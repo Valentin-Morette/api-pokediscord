@@ -146,12 +146,15 @@ class PokemonController {
                     models.pokemon_trainer.insert({
                       idPokemon: result[0].idPokemon,
                       idTrainer,
-                      isShiny: 1,
+                      isShiny: 0,
                     });
                     models.pokemon_wild
                       .updateByCatchCode(catchCode, 1, 0)
                       .then(() => {
-                        res.status(201).send({ status: "catch" });
+                        res.status(201).send({
+                          status: "catch",
+                          pokemonName: pokemonResult[0][0].name,
+                        });
                       })
                       .catch((err) => {
                         console.error(err);
@@ -164,14 +167,20 @@ class PokemonController {
                     models.pokemon_wild
                       .updateByCatchCode(catchCode, 0, 1)
                       .then(() => {
-                        res.status(201).send({ status: "escape" });
+                        res.status(201).send({
+                          status: "escape",
+                          pokemonName: pokemonResult[0][0].name,
+                        });
                       })
                       .catch((err) => {
                         console.error(err);
                         res.sendStatus(500);
                       });
                   } else {
-                    res.status(201).send({ status: "noCatch" });
+                    res.status(201).send({
+                      status: "noCatch",
+                      pokemonName: pokemonResult[0][0].name,
+                    });
                   }
                 });
               }
