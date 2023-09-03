@@ -29,6 +29,18 @@ class PokemonController {
       });
   };
 
+  static readByTrainer = (req, res) => {
+    models.pokemon
+      .findByTrainer(req.params.id)
+      .then(([rows]) => {
+        res.send(rows);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
   static edit = (req, res) => {
     const pokemon = req.body;
 

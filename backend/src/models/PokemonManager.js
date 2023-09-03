@@ -43,6 +43,13 @@ class PokemonManager extends AbstractManager {
       [zoneName]
     );
   }
+
+  findByTrainer(idTrainer) {
+    return this.connection.query(
+      `select p.*, pt.quantity from ${PokemonManager.table} as p inner join pokemon_trainer as pt on p.id = pt.idPokemon where pt.idTrainer = ?`,
+      [idTrainer]
+    );
+  }
 }
 
 module.exports = PokemonManager;
