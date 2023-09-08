@@ -15,7 +15,7 @@ class TrainerController {
 
   static read = (req, res) => {
     models.trainer
-      .find(req.params.id)
+      .find(req.params.idDiscord)
       .then(([rows]) => {
         if (rows[0] == null) {
           res.sendStatus(404);

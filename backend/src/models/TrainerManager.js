@@ -37,6 +37,13 @@ class TrainerManager extends AbstractManager {
       [idDiscord]
     );
   }
+
+  find(idDiscord) {
+    return this.connection.query(
+      `select * from ${TrainerManager.table} where idDiscord = ?`,
+      [idDiscord]
+    );
+  }
 }
 
 module.exports = TrainerManager;

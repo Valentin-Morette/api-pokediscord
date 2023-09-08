@@ -28,7 +28,7 @@ router.get("/role", RoleController.browse);
 router.get("/role/:id", RoleController.read);
 
 router.get("/trainer", TrainerController.browse);
-router.get("/trainer/:id", TrainerController.read);
+router.get("/trainer/:idDiscord", TrainerController.read);
 router.get("/trainer/verify/:idDiscord", TrainerController.verifyIdDiscord);
 router.post("/trainer", TrainerController.add);
 router.put("/trainer/:id", TrainerController.edit);
