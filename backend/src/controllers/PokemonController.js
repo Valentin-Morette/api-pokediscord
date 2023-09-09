@@ -96,7 +96,20 @@ class PokemonController {
           res.send(rows);
           return;
         }
-        const randomPokemonWild = rows[Math.floor(Math.random() * rows.length)];
+        let sumSpawnChance = 0;
+        for (let i = 0; i < rows.length; i += 1) {
+          sumSpawnChance += rows[i].spawnChance;
+        }
+        const randomSpawnChance = Math.floor(Math.random() * sumSpawnChance);
+        let sumSpawnChance2 = 0;
+        let randomPokemonWild = {};
+        for (let i = 0; i < rows.length; i += 1) {
+          sumSpawnChance2 += rows[i].spawnChance;
+          if (randomSpawnChance <= sumSpawnChance2) {
+            randomPokemonWild = rows[i];
+            break;
+          }
+        }
         const pokemonWild = {
           idPokemon: randomPokemonWild.id,
           isCatch: 0,
@@ -137,7 +150,7 @@ class PokemonController {
           res.status(201).send({ status: "alreadyCatch" });
         } else {
           models.pokeball_trainer
-            .updateQuantity(idBall, idTrainer)
+            .updateQuantity(idBall, idTrainer, 1)
             .then(([resultUpdate]) => {
               if (resultUpdate.affectedRows === 0) {
                 res.status(201).send({ status: "noBall" });
@@ -203,6 +216,49 @@ class PokemonController {
         console.error(err);
         res.sendStatus(500);
       });
+  };
+
+  static sellPokemon = (req, res) => {
+    const { namePokemon } = req.body;
+    const { idTrainer } = req.body;
+    const { quantity } = req.body;
+    let idPokemon = 0;
+    models.pokemon.findByName(namePokemon).then(([resultId]) => {
+      if (resultId.length === 0) {
+        res.status(201).send({ status: "noExistPokemon" });
+        return;
+      }
+      idPokemon = resultId[0].id;
+      models.pokemon_trainer
+        .updateQuantity(idPokemon, idTrainer, quantity)
+        .then(([result]) => {
+          if (result.affectedRows === 0) {
+            res.status(201).send({ status: "noPokemon" });
+          } else {
+            models.pokemon_trainer
+              .find(idPokemon, idTrainer)
+              .then(([resultFind]) => {
+                if (resultFind[0].quantity === 0) {
+                  models.pokemon_trainer.delete(idPokemon, idTrainer);
+                }
+                models.pokemon.find(idPokemon).then(([resultPokemon]) => {
+                  const sellPrice = resultPokemon[0].sellPrice * quantity;
+                  models.trainer.updateMoney(idTrainer, sellPrice).then(() => {
+                    res.status(201).send({
+                      status: "sell",
+                      pokemonName: resultPokemon[0].name,
+                      sellPrice,
+                    });
+                  });
+                });
+              });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          res.sendStatus(500);
+        });
+    });
   };
 
   static delete = (req, res) => {

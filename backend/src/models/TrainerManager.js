@@ -31,6 +31,13 @@ class TrainerManager extends AbstractManager {
     );
   }
 
+  updateMoney(id, money) {
+    return this.connection.query(
+      `update ${TrainerManager.table} set money = money + ? where idDiscord = ?`,
+      [money, id]
+    );
+  }
+
   verifyIdDiscord(idDiscord) {
     return this.connection.query(
       `select * from ${TrainerManager.table} where idDiscord = ?`,

@@ -39,7 +39,7 @@ class PokemonManager extends AbstractManager {
 
   findInZone(zoneName) {
     return this.connection.query(
-      `select p.* from ${PokemonManager.table} as p inner join pokemon_zone as pz on p.id = pz.idPokemon inner join zone as z on pz.idZone = z.id where z.name = ?`,
+      `select p.*, pz.spawnChance from ${PokemonManager.table} as p inner join pokemon_zone as pz on p.id = pz.idPokemon inner join zone as z on pz.idZone = z.id where z.name = ?`,
       [zoneName]
     );
   }
@@ -48,6 +48,13 @@ class PokemonManager extends AbstractManager {
     return this.connection.query(
       `select p.*, pt.quantity from ${PokemonManager.table} as p inner join pokemon_trainer as pt on p.id = pt.idPokemon where pt.idTrainer = ?`,
       [idTrainer]
+    );
+  }
+
+  findByName(name) {
+    return this.connection.query(
+      `select * from ${PokemonManager.table} where name = ?`,
+      [name]
     );
   }
 }

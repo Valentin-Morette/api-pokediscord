@@ -56,7 +56,11 @@ class TrainerController {
       .insert(payload.trainer)
       .then(([result]) => {
         for (const pokeball of payload.ball) {
-          models.pokeball_trainer.insert(pokeball, payload.trainer.idDiscord);
+          models.pokeball_trainer.insert(
+            pokeball.id,
+            payload.trainer.idDiscord,
+            pokeball.quantity
+          );
         }
         res.status(201).send({ trainer: payload.trainer, id: result.insertId });
       })

@@ -13,12 +13,14 @@ const router = express.Router();
 router.get("/pokeball", PokeballController.browse);
 router.get("/pokeball/:id", PokeballController.read);
 router.get("/pokeball/trainer/:id", PokeballController.readByTrainer);
+router.post("/pokeball/buy", PokeballController.buy);
 
 router.get("/pokemon", PokemonController.browse);
 router.get("/pokemon/:id", PokemonController.read);
 router.get("/pokemon/trainer/:id", PokemonController.readByTrainer);
 router.post("/pokemon", PokemonController.add);
 router.post("/pokemon/catch", PokemonController.catchPokemon);
+router.post("/pokemon/sell", PokemonController.sellPokemon);
 router.post("/pokemon/wild", PokemonController.addPokemonWild);
 router.post("/pokemon/zone", PokemonController.findInZone);
 router.put("/pokemon/:id", PokemonController.edit);

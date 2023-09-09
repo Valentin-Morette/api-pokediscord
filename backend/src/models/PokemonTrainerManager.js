@@ -3,6 +3,13 @@ const AbstractManager = require("./AbstractManager");
 class PokemonTrainerManager extends AbstractManager {
   static table = "pokemon_trainer";
 
+  find(idPokemon, idTrainer) {
+    return this.connection.query(
+      `select * from ${PokemonTrainerManager.table} where idPokemon = ? AND idTrainer = ?`,
+      [idPokemon, idTrainer]
+    );
+  }
+
   insert(pokemonTrainer) {
     return this.connection.query(
       `insert into ${PokemonTrainerManager.table} (idPokemon, idTrainer, isShiny, quantity) values (?, ?, ?, 1)
@@ -15,10 +22,17 @@ class PokemonTrainerManager extends AbstractManager {
     );
   }
 
-  updateQuantity(idBall, idTrainer) {
+  delete(idPokemon, idTrainer) {
     return this.connection.query(
-      `update ${PokemonTrainerManager.table} set quantity = quantity - 1 WHERE idPokemon = ? AND idTrainer = ? AND quantity > 0`,
-      [idBall, idTrainer]
+      `delete from ${PokemonTrainerManager.table} where idPokemon = ? AND idTrainer = ?`,
+      [idPokemon, idTrainer]
+    );
+  }
+
+  updateQuantity(idPokemon, idTrainer, number) {
+    return this.connection.query(
+      `update ${PokemonTrainerManager.table} set quantity = quantity - ? where idPokemon = ? AND idTrainer = ? AND quantity >= ?`,
+      [number, idPokemon, idTrainer, number]
     );
   }
 }
