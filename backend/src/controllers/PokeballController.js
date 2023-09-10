@@ -83,13 +83,17 @@ class PokeballController {
       .find(idBall)
       .then(([rowsBall]) => {
         if (rowsBall[0] == null) {
-          res.sendStatus(404);
+          res.send({
+            status: "noExistBall",
+          });
         } else {
           models.trainer
             .find(idDiscord)
             .then(([rowsTrainer]) => {
               if (rowsTrainer[0].money < rowsBall[0].buyingPrice * quantity) {
-                res.sendStatus(403);
+                res.send({
+                  status: "noMoney",
+                });
               } else {
                 models.pokeball_trainer
                   .insertMany(idBall, idDiscord, quantity)
@@ -101,8 +105,8 @@ class PokeballController {
                       )
                       .then(() => {
                         res.send({
-                          status: "success",
-                          message: "Pokeball(s) bought",
+                          status: "buy",
+                          price: rowsBall[0].buyingPrice * quantity,
                         });
                       })
                       .catch((err) => {
