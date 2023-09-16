@@ -10,6 +10,12 @@ class AbstractManager {
     ]);
   }
 
+  findAllOrderDesc() {
+    return this.connection.query(
+      `select * from  ${this.table} order by id desc`
+    );
+  }
+
   findAll() {
     return this.connection.query(`select * from  ${this.table}`);
   }

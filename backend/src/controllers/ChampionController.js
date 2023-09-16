@@ -1,9 +1,9 @@
 const models = require("../models");
 
-class RoleController {
+class ChampionController {
   static browse = (req, res) => {
-    models.role
-      .findAllOrderDesc()
+    models.champion
+      .findAll()
       .then(([rows]) => {
         res.send(rows);
       })
@@ -14,7 +14,7 @@ class RoleController {
   };
 
   static read = (req, res) => {
-    models.role
+    models.champion
       .find(req.params.id)
       .then(([rows]) => {
         if (rows[0] == null) {
@@ -30,12 +30,12 @@ class RoleController {
   };
 
   static edit = (req, res) => {
-    const role = req.body;
+    const champion = req.body;
 
-    role.id = parseInt(req.params.id, 10);
+    champion.id = parseInt(req.params.id, 10);
 
-    models.role
-      .update(role)
+    models.champion
+      .update(champion)
       .then(([result]) => {
         if (result.affectedRows === 0) {
           res.sendStatus(404);
@@ -50,14 +50,14 @@ class RoleController {
   };
 
   static add = (req, res) => {
-    const role = req.body;
+    const champion = req.body;
 
     // TODO validations (length, format...)
 
-    models.role
-      .insert(role)
+    models.champion
+      .insert(champion)
       .then(([result]) => {
-        res.status(201).send({ ...role, id: result.insertId });
+        res.status(201).send({ ...champion, id: result.insertId });
       })
       .catch((err) => {
         console.error(err);
@@ -66,7 +66,7 @@ class RoleController {
   };
 
   static delete = (req, res) => {
-    models.role
+    models.champion
       .delete(req.params.id)
       .then(() => {
         res.sendStatus(204);
@@ -78,4 +78,4 @@ class RoleController {
   };
 }
 
-module.exports = RoleController;
+module.exports = ChampionController;

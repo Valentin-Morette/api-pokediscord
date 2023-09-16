@@ -6,9 +6,12 @@ const {
   PokeballController,
   TrainerController,
   RoleController,
+  ChampionController,
 } = require("./controllers");
 
 const router = express.Router();
+
+router.get("/champion", ChampionController.browse);
 
 router.get("/pokeball", PokeballController.browse);
 router.get("/pokeball/:id", PokeballController.read);
