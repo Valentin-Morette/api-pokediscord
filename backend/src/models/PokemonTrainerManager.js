@@ -35,6 +35,13 @@ class PokemonTrainerManager extends AbstractManager {
       [number, idPokemon, idTrainer, number]
     );
   }
+
+  countAndSumPokemonByTrainer(idTrainer) {
+    return this.connection.query(
+      `select count(*) as count, sum(quantity) as sum from ${PokemonTrainerManager.table} where idTrainer = ?`,
+      [idTrainer]
+    );
+  }
 }
 
 module.exports = PokemonTrainerManager;

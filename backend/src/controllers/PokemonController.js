@@ -30,14 +30,22 @@ class PokemonController {
   };
 
   static readByTrainer = (req, res) => {
-    models.pokemon
-      .findByTrainer(req.params.id)
-      .then(([rows]) => {
-        res.send(rows);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
+    let countPokemon = 0;
+    let sumPokemon = 0;
+    models.pokemon_trainer
+      .countAndSumPokemonByTrainer(req.params.id)
+      .then(([result]) => {
+        countPokemon = result[0].count;
+        sumPokemon = parseInt(result[0].sum, 10);
+        models.pokemon
+          .findByTrainer(req.params.id)
+          .then(([rows]) => {
+            res.send({ countPokemon, sumPokemon, pokemon: rows });
+          })
+          .catch((err) => {
+            console.error(err);
+            res.sendStatus(500);
+          });
       });
   };
 
