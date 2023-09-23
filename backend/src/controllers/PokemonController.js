@@ -97,8 +97,9 @@ class PokemonController {
 
   static addPokemonWild = (req, res) => {
     const zone = req.body.nameZone;
+    const type = req.body.spawnType;
     models.pokemon
-      .findInZone(zone)
+      .findInZone(zone, type)
       .then(([rows]) => {
         if (rows.length === 0) {
           res.send(rows);
@@ -145,6 +146,51 @@ class PokemonController {
       });
   };
 
+  static evolvePokemon = (req, res) => {
+    const { namePokemon } = req.body;
+    const { idTrainer } = req.body;
+    models.pokemon.findByName(namePokemon).then(([pokemon]) => {
+      if (pokemon.length === 0) {
+        res.status(201).send({ status: "noExistPokemon" });
+        return;
+      }
+      if (pokemon[0].idEvolution === null) {
+        res.status(201).send({ status: "noEvolution" });
+        return;
+      }
+      models.pokemon_trainer
+        .updateQuantity(pokemon[0].id, idTrainer, pokemon[0].numberEvolution)
+        .then(([result]) => {
+          if (result.affectedRows === 0) {
+            res.status(201).send({
+              status: "noPokemon",
+              numberPokemon: pokemon[0].numberEvolution,
+            });
+          } else {
+            const pokemonTrainer = {
+              idPokemon: pokemon[0].idEvolution,
+              idTrainer,
+              isShiny: 0,
+            };
+            models.pokemon_trainer.insert(pokemonTrainer).then(() => {
+              models.pokemon
+                .find(pokemon[0].idEvolution)
+                .then(([resultPokemon]) => {
+                  res.status(201).send({
+                    status: "evolve",
+                    pokemonName: resultPokemon[0].name,
+                  });
+                });
+            });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          res.sendStatus(500);
+        });
+    });
+  };
+
   static catchPokemon = (req, res) => {
     const { catchCode } = req.body;
     const { idTrainer } = req.body;
@@ -172,6 +218,9 @@ class PokemonController {
                   catchChance += pokemonResult[0][0].catchRate;
                   escapeChance += pokemonResult[0][0].escapeRate;
                   catchChance += pokeballResult[0][0].catchBonus;
+                  if (catchChance < 0) {
+                    catchChance = 1;
+                  }
 
                   const randomCatch = Math.floor(Math.random() * 100);
 
