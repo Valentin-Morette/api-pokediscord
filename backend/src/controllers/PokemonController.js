@@ -167,20 +167,24 @@ class PokemonController {
               numberPokemon: pokemon[0].numberEvolution,
             });
           } else {
+            let { idEvolution } = pokemon[0];
+            // Evolution Evoli
+            if (idEvolution === 134) {
+              const randomNum = Math.floor(Math.random() * 3);
+              idEvolution = 134 + randomNum;
+            }
             const pokemonTrainer = {
-              idPokemon: pokemon[0].idEvolution,
+              idPokemon: idEvolution,
               idTrainer,
               isShiny: 0,
             };
             models.pokemon_trainer.insert(pokemonTrainer).then(() => {
-              models.pokemon
-                .find(pokemon[0].idEvolution)
-                .then(([resultPokemon]) => {
-                  res.status(201).send({
-                    status: "evolve",
-                    pokemonName: resultPokemon[0].name,
-                  });
+              models.pokemon.find(idEvolution).then(([resultPokemon]) => {
+                res.status(201).send({
+                  status: "evolve",
+                  pokemonName: resultPokemon[0].name,
                 });
+              });
             });
           }
         })
@@ -188,6 +192,21 @@ class PokemonController {
           console.error(err);
           res.sendStatus(500);
         });
+    });
+  };
+
+  static pricePokemon = (req, res) => {
+    const { namePokemon } = req.body;
+    models.pokemon.findByName(namePokemon).then(([result]) => {
+      if (result.length === 0) {
+        res.status(201).send({ status: "noExistPokemon" });
+        return;
+      }
+      res.status(201).send({
+        status: "price",
+        pokemonName: result[0].name,
+        price: result[0].sellPrice,
+      });
     });
   };
 

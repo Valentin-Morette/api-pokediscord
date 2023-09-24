@@ -24,6 +24,7 @@ router.get("/pokemon/trainer/:id", PokemonController.readByTrainer);
 router.post("/pokemon", PokemonController.add);
 router.post("/pokemon/catch", PokemonController.catchPokemon);
 router.post("/pokemon/evolve", PokemonController.evolvePokemon);
+router.post("/pokemon/price", PokemonController.pricePokemon);
 router.post("/pokemon/sell", PokemonController.sellPokemon);
 router.post("/pokemon/wild", PokemonController.addPokemonWild);
 // router.post("/pokemon/zone", PokemonController.findInZone);
