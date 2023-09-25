@@ -195,7 +195,7 @@ class PokemonController {
     });
   };
 
-  static pricePokemon = (req, res) => {
+  static infoPokemon = (req, res) => {
     const { namePokemon } = req.body;
     models.pokemon.findByName(namePokemon).then(([result]) => {
       if (result.length === 0) {
@@ -203,9 +203,8 @@ class PokemonController {
         return;
       }
       res.status(201).send({
-        status: "price",
-        pokemonName: result[0].name,
-        price: result[0].sellPrice,
+        status: "info",
+        infos: result[0],
       });
     });
   };
@@ -217,10 +216,12 @@ class PokemonController {
     models.pokemon_wild
       .getByCatchCode(catchCode)
       .then(([result]) => {
-        if (result[0].isEscape === 1) {
-          res.status(201).send({ status: "alreadyEscape" });
+        if (result.length === 0) {
+          res.status(201).send({ status: "noExistPokemon" });
         } else if (result[0].isCatch === 1) {
           res.status(201).send({ status: "alreadyCatch" });
+        } else if (result[0].isEscape === 1) {
+          res.status(201).send({ status: "alreadyEscape" });
         } else {
           models.pokeball_trainer
             .updateQuantity(idBall, idTrainer, 1)
