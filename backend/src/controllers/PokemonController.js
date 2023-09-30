@@ -183,6 +183,7 @@ class PokemonController {
                 res.status(201).send({
                   status: "evolve",
                   pokemonName: resultPokemon[0].name,
+                  pokemonImg: resultPokemon[0].img,
                 });
               });
             });
