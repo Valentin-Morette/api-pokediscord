@@ -1,0 +1,34 @@
+- Créer une BDD via https://www.db4free.net/, et se connecter à celle-ci via phpMyAdmin.
+- Transferer le fichier .sql de la BDD sur le serveur.
+
+- Aller sur le dossier Backend du projet et utiliser la commande sudo npm i -g vercel pour installer vercel.
+- Utiliser la commande vercel login pour se connecter à son compte vercel.
+- Créer un fichier vercel.json à la racine du dossier Backend et y mettre le contenu suivant :
+{
+"version": 2,
+"builds": [{ "src": "index.js", "use": "@vercel/node" }],
+"routes": [{ "src": "/(.*)", "dest": "index.js" }]
+}
+- Faire vercel --prod pour déployer le projet sur vercel.
+Les réponses aux question sont :
+    - Set up and deploy : y
+    - Which scope do you want to deploy to? : <votre nom d'utilisateur vercel>
+    - Link to existing project? : n
+    - What’s your project’s name? : <nom du projet>
+    - In which directory is your code located? : ./
+
+- Aller sur https://vercel.com/valentin-morette/ et choisir le nouveau projet.
+- Cliquer sur "Settings" puis "Environment Variables".
+    - FRONTEND_URL : <url du projet frontend>
+    - PORT : 5000
+    - DB_HOST : <url de la BDD> (ex : db4free.net)
+    - DB_USER : <nom d'utilisateur de la BDD>
+    - DB_PASSWORD : <mot de passe de la BDD>
+    - DB_NAME : <nom de la BDD>
+- Redeployer le projet avec vercel --prod.
+
+A cette étape le Backend est déployé.
+
+Reste plus qu'a déployer le Frontend avec installGithubPagesWCS.sh.
+Attention, il faut que les variables d'environnement du Frontend commence par VITE_.
+

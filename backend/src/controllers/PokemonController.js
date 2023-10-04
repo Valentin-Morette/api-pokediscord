@@ -146,6 +146,20 @@ class PokemonController {
       });
   };
 
+  static deletePokemonWild = (req, res) => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    models.pokemon_wild
+      .deleteByDate(yesterday)
+      .then(() => {
+        res.sendStatus(204);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
   static evolvePokemon = (req, res) => {
     const { namePokemon } = req.body;
     const { idTrainer } = req.body;

@@ -29,6 +29,13 @@ class PokemonWildManager extends AbstractManager {
       [isCatch, isEscape, catchCode]
     );
   }
+
+  deleteByDate(date) {
+    return this.connection.query(
+      `delete from ${PokemonWildManager.table} where dateAppear < ?`,
+      [date]
+    );
+  }
 }
 
 module.exports = PokemonWildManager;
