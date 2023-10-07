@@ -46,7 +46,7 @@ class PokemonManager extends AbstractManager {
 
   findByTrainer(idTrainer) {
     return this.connection.query(
-      `select p.*, pt.quantity from ${PokemonManager.table} as p inner join pokemon_trainer as pt on p.id = pt.idPokemon where pt.idTrainer = ? and pt.quantity > 0 order by p.name asc`,
+      `select p.*, pt.quantity from ${PokemonManager.table} as p inner join pokemon_trainer as pt on p.id = pt.idPokemon where pt.idTrainer = ? and pt.quantity > 0 order by p.id asc`,
       [idTrainer]
     );
   }
