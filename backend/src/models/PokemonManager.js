@@ -5,7 +5,11 @@ class PokemonManager extends AbstractManager {
 
   insert(pokemon) {
     return this.connection.query(
-      `insert into ${PokemonManager.table} (id, name, type1, type2, generation, img, sellPrice, catchRate, escapeRate) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO
+        ${PokemonManager.table}
+        (id, name, type1, type2, generation, img, sellPrice, catchRate, escapeRate)
+      VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         pokemon.id,
         pokemon.name,
@@ -39,8 +43,41 @@ class PokemonManager extends AbstractManager {
 
   findInZone(zoneName, type) {
     return this.connection.query(
-      `select p.*, pz.spawnChance from ${PokemonManager.table} as p inner join pokemon_zone as pz on p.id = pz.idPokemon inner join zone as z on pz.idZone = z.id where z.name = ? and pz.spawnType = ?`,
+      `SELECT
+        p.*,
+        pz.spawnChance
+      FROM
+        ${PokemonManager.table} AS p
+      INNER JOIN
+        pokemon_zone AS pz
+        ON p.id = pz.idPokemon
+      INNER JOIN
+        zone AS z
+        ON pz.idZone = z.id
+      WHERE
+        z.name = ?
+        AND pz.spawnType = ?`,
       [zoneName, type]
+    );
+  }
+
+  findAllInZone(nameZone) {
+    return this.connection.query(
+      `SELECT
+        p.name,
+        pz.spawnType
+      FROM
+        zone AS z
+      INNER JOIN
+        pokemon_zone AS pz
+        ON z.id = pz.idZone
+      INNER JOIN
+        pokemon AS p
+        ON pz.idPokemon = p.id
+      WHERE
+        z.name = ?
+        AND p.name != "MEW"`,
+      [nameZone]
     );
   }
 

@@ -82,10 +82,10 @@ class PokemonController {
       });
   };
 
-  static findInZone = (req, res) => {
+  static findAllInZone = (req, res) => {
     const zone = req.body.nameZone;
     models.pokemon
-      .findInZone(zone)
+      .findAllInZone(zone)
       .then(([rows]) => {
         res.send(rows);
       })

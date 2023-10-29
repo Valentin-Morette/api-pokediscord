@@ -27,9 +27,9 @@ router.post("/pokemon/evolve", PokemonController.evolvePokemon);
 router.post("/pokemon/info", PokemonController.infoPokemon);
 router.post("/pokemon/sell", PokemonController.sellPokemon);
 router.post("/pokemon/wild", PokemonController.addPokemonWild);
-router.delete("/pokemon/wild", PokemonController.deletePokemonWild);
-// router.post("/pokemon/zone", PokemonController.findInZone);
+router.post("/pokemon/zone", PokemonController.findAllInZone);
 router.put("/pokemon/:id", PokemonController.edit);
+router.delete("/pokemon/wild", PokemonController.deletePokemonWild);
 router.delete("/pokemon/:id", PokemonController.delete);
 
 router.get("/role", RoleController.browse);
