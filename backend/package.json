@@ -19,7 +19,8 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
     "mysql2": "^2.3.3",
-    "node-fetch": "^2.6.12"
+    "node-fetch": "^2.6.12",
+    "uuid": "^9.0.1"
   },
   "rules": {
     "no-console": [

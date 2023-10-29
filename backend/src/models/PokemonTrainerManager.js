@@ -10,14 +10,16 @@ class PokemonTrainerManager extends AbstractManager {
     );
   }
 
-  insert(pokemonTrainer) {
+  insert(pokemonTrainer, quantity = 1) {
     return this.connection.query(
-      `insert into ${PokemonTrainerManager.table} (idPokemon, idTrainer, isShiny, quantity) values (?, ?, ?, 1)
-      ON DUPLICATE KEY UPDATE quantity = quantity + 1;`,
+      `insert into ${PokemonTrainerManager.table} (idPokemon, idTrainer, isShiny, quantity) values (?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE quantity = quantity + ?;`,
       [
         pokemonTrainer.idPokemon,
         pokemonTrainer.idTrainer,
         pokemonTrainer.isShiny,
+        quantity,
+        quantity,
       ]
     );
   }
@@ -29,7 +31,7 @@ class PokemonTrainerManager extends AbstractManager {
     );
   }
 
-  updateQuantity(idPokemon, idTrainer, number) {
+  updateDownQuantity(idPokemon, idTrainer, number) {
     return this.connection.query(
       `update ${PokemonTrainerManager.table} set quantity = quantity - ? where idPokemon = ? AND idTrainer = ? AND quantity >= ?`,
       [number, idPokemon, idTrainer, number]

@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require("uuid");
 const models = require("../models");
 
 class PokemonController {
@@ -123,7 +124,7 @@ class PokemonController {
           idPokemon: randomPokemonWild.id,
           isCatch: 0,
           isEscape: 0,
-          catchCode: Math.floor(Math.random() * 100000),
+          catchCode: uuidv4(),
           dateAppear: new Date(),
         };
         models.pokemon_wild
@@ -173,7 +174,11 @@ class PokemonController {
         return;
       }
       models.pokemon_trainer
-        .updateQuantity(pokemon[0].id, idTrainer, pokemon[0].numberEvolution)
+        .updateDownQuantity(
+          pokemon[0].id,
+          idTrainer,
+          pokemon[0].numberEvolution
+        )
         .then(([result]) => {
           if (result.affectedRows === 0) {
             res.status(201).send({
@@ -322,7 +327,7 @@ class PokemonController {
       }
       idPokemon = resultId[0].id;
       models.pokemon_trainer
-        .updateQuantity(idPokemon, idTrainer, quantity)
+        .updateDownQuantity(idPokemon, idTrainer, quantity)
         .then(([result]) => {
           if (result.affectedRows === 0) {
             res.status(201).send({ status: "noPokemon" });
