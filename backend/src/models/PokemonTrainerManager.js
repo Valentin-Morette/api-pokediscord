@@ -44,6 +44,13 @@ class PokemonTrainerManager extends AbstractManager {
       [idTrainer]
     );
   }
+
+  findOnePokemonByTrainer(idTrainer, idPokemon) {
+    return this.connection.query(
+      `select * from ${PokemonTrainerManager.table} where idTrainer = ? AND idPokemon = ?`,
+      [idTrainer, idPokemon]
+    );
+  }
 }
 
 module.exports = PokemonTrainerManager;

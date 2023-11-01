@@ -39,6 +39,7 @@ router.get("/trainer", TrainerController.browse);
 router.get("/trainer/:idDiscord", TrainerController.read);
 router.get("/trainer/verify/:idDiscord", TrainerController.verifyIdDiscord);
 router.post("/trainer", TrainerController.add);
+router.post("/trainer/pokemon/trade", TrainerController.tradePokemon);
 router.put("/trainer/:id", TrainerController.edit);
 router.delete("/trainer/:id", TrainerController.delete);
 
