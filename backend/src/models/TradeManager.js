@@ -24,7 +24,7 @@ class TradeManager extends AbstractManager {
 
   updateAccept(idTrade) {
     return this.connection.query(
-      `update ${TradeManager.table} set isAccept = 0 where id = ?`,
+      `update ${TradeManager.table} set isAccept = 1 where id = ?`,
       [idTrade]
     );
   }
