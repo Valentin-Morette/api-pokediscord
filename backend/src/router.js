@@ -45,5 +45,6 @@ router.delete("/trainer/:id", TrainerController.delete);
 
 router.get("/zone", ZoneController.browse);
 router.get("/zone/:id", ZoneController.read);
+router.get("/zone/pokemon/:name", ZoneController.findZoneByPokemonName);
 
 module.exports = router;

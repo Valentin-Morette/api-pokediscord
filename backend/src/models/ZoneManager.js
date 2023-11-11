@@ -36,6 +36,24 @@ class ZoneManager extends AbstractManager {
       ]
     );
   }
+
+  findZoneByPokemonName(name) {
+    return this.connection.query(
+      `SELECT
+        z.name
+      FROM
+        ${ZoneManager.table} AS z
+      INNER JOIN
+        pokemon_zone AS pz
+        ON z.id = pz.idZone
+      INNER JOIN
+        pokemon AS p
+        ON pz.idPokemon = p.id
+      WHERE
+        p.name = ?`,
+      [name]
+    );
+  }
 }
 
 module.exports = ZoneManager;
