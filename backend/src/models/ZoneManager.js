@@ -39,7 +39,7 @@ class ZoneManager extends AbstractManager {
 
   findZoneByPokemonName(name) {
     return this.connection.query(
-      `SELECT
+      `SELECT DISTINCT
         z.name
       FROM
         ${ZoneManager.table} AS z
