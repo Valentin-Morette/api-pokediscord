@@ -74,7 +74,11 @@ class ZoneController {
         models.zone
           .findZoneByPokemonName(name)
           .then(([rows]) => {
-            res.send({ status: "zoneListed", result: rows });
+            res.send({
+              status: "zoneListed",
+              pokemon: result[0],
+              result: rows,
+            });
           })
           .catch((err) => {
             console.error(err);
