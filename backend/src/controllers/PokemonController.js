@@ -215,18 +215,30 @@ class PokemonController {
     });
   };
 
-  static infoPokemon = (req, res) => {
-    const { namePokemon } = req.body;
-    models.pokemon.findByName(namePokemon).then(([result]) => {
-      if (result.length === 0) {
+  static infoPokemon = async (req, res) => {
+    try {
+      const { namePokemon } = req.body;
+      const [[result]] = await models.pokemon.findByName(namePokemon);
+
+      if (!result) {
         res.status(201).send({ status: "noExistPokemon" });
         return;
       }
+
+      let pokemonInfo = result;
+
+      if (result.idEvolution !== null) {
+        const [[evolution]] = await models.pokemon.find(result.idEvolution);
+        pokemonInfo = { ...result, evolution };
+      }
+
       res.status(201).send({
         status: "info",
-        infos: result[0],
+        infos: pokemonInfo,
       });
-    });
+    } catch (error) {
+      res.status(500).send({ status: "error", message: error.message });
+    }
   };
 
   static catchPokemon = (req, res) => {
