@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 const { v4: uuidv4 } = require("uuid");
 const models = require("../models");
 
@@ -96,56 +97,66 @@ class PokemonController {
       });
   };
 
-  static addPokemonWild = (req, res) => {
+  static addPokemonWild = async (req, res) => {
     const zone = req.body.nameZone;
     const type = req.body.spawnType;
-    models.pokemon
-      .findInZone(zone, type)
-      .then(([rows]) => {
+    const pokemonName = req.body.namePokemon;
+
+    try {
+      let pokemonData;
+
+      if (pokemonName !== undefined) {
+        const [result] = await models.pokemon.findByName(pokemonName);
+        if (result.length === 0) {
+          res.status(201).send({ status: "noExistPokemon" });
+          return;
+        }
+        pokemonData = result[0];
+      } else {
+        const [rows] = await models.pokemon.findInZone(zone, type);
         if (rows.length === 0) {
           res.send(rows);
           return;
         }
-        let sumSpawnChance = 0;
-        for (let i = 0; i < rows.length; i += 1) {
-          sumSpawnChance += rows[i].spawnChance;
-        }
-        const randomSpawnChance = Math.floor(Math.random() * sumSpawnChance);
-        let sumSpawnChance2 = 0;
-        let randomPokemonWild = {};
-        for (let i = 0; i < rows.length; i += 1) {
-          sumSpawnChance2 += rows[i].spawnChance;
-          if (randomSpawnChance <= sumSpawnChance2) {
-            randomPokemonWild = rows[i];
-            break;
-          }
-        }
-        const pokemonWild = {
-          idPokemon: randomPokemonWild.id,
-          isCatch: 0,
-          isEscape: 0,
-          catchCode: uuidv4(),
-          dateAppear: new Date(),
-        };
-        models.pokemon_wild
-          .insert(pokemonWild)
-          .then(([result]) => {
-            res.status(201).send({
-              id: result.insertId,
-              catchCode: pokemonWild.catchCode,
-              ...randomPokemonWild,
-            });
-          })
-          .catch((err) => {
-            console.error(err);
-            res.sendStatus(500);
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
+        pokemonData = this.selectRandomPokemon(rows);
+      }
+
+      const pokemonWild = this.createPokemonWildObject(pokemonData);
+      const [resultInsert] = await models.pokemon_wild.insert(pokemonWild);
+      res.status(201).send({
+        id: resultInsert.insertId,
+        catchCode: pokemonWild.catchCode,
+        ...pokemonData,
       });
+    } catch (err) {
+      console.error(err);
+      res.sendStatus(500);
+    }
   };
+
+  static selectRandomPokemon(rows) {
+    const sumSpawnChance = rows.reduce((acc, row) => acc + row.spawnChance, 0);
+    const randomSpawnChance = Math.floor(Math.random() * sumSpawnChance);
+    let sumSpawnChance2 = 0;
+
+    for (const row of rows) {
+      sumSpawnChance2 += row.spawnChance;
+      if (randomSpawnChance <= sumSpawnChance2) {
+        return row;
+      }
+    }
+    return rows[0];
+  }
+
+  static createPokemonWildObject(pokemonData) {
+    return {
+      idPokemon: pokemonData.id,
+      isCatch: 0,
+      isEscape: 0,
+      catchCode: uuidv4(),
+      dateAppear: new Date(),
+    };
+  }
 
   static deletePokemonWild = (req, res) => {
     const yesterday = new Date();
