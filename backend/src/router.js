@@ -42,7 +42,7 @@ router.put("/trainer/:id", TrainerController.edit);
 router.delete("/trainer/:id", TrainerController.delete);
 
 router.post("/rune/buy", RuneTrainerController.buy);
-// router.post("/rune/use", RuneTrainerController.use);
+router.post("/rune/use", PokemonController.useRune);
 
 router.get("/zone", ZoneController.browse);
 router.get("/zone/:id", ZoneController.read);

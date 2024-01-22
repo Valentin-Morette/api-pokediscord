@@ -98,6 +98,7 @@ class PokemonController {
   };
 
   static addPokemonWild = async (req, res) => {
+    // console.log(req.body);
     const zone = req.body.nameZone;
     const type = req.body.spawnType;
     const pokemonName = req.body.namePokemon;
@@ -132,6 +133,18 @@ class PokemonController {
       console.error(err);
       res.sendStatus(500);
     }
+  };
+
+  static useRune = (req, res) => {
+    // const { idTrainer } = req.body;
+    const { pokemonName } = req.body;
+    const payloadAddPokemon = {
+      body: {
+        namePokemon: pokemonName,
+      },
+    };
+
+    this.addPokemonWild(payloadAddPokemon, res);
   };
 
   static selectRandomPokemon(rows) {
