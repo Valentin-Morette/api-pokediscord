@@ -6,12 +6,10 @@ const {
   PokeballController,
   TrainerController,
   RoleController,
-  ChampionController,
+  RuneTrainerController,
 } = require("./controllers");
 
 const router = express.Router();
-
-router.get("/champion", ChampionController.browse);
 
 router.get("/pokeball", PokeballController.browse);
 router.get("/pokeball/:id", PokeballController.read);
@@ -42,6 +40,9 @@ router.post("/trainer", TrainerController.add);
 router.post("/trainer/pokemon/trade", TrainerController.tradePokemon);
 router.put("/trainer/:id", TrainerController.edit);
 router.delete("/trainer/:id", TrainerController.delete);
+
+router.post("/rune/buy", RuneTrainerController.buy);
+// router.post("/rune/use", RuneTrainerController.use);
 
 router.get("/zone", ZoneController.browse);
 router.get("/zone/:id", ZoneController.read);
