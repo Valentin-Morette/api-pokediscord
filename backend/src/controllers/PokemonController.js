@@ -98,7 +98,6 @@ class PokemonController {
   };
 
   static addPokemonWild = async (req, res) => {
-    // console.log(req.body);
     const zone = req.body.nameZone;
     const type = req.body.spawnType;
     const pokemonName = req.body.namePokemon;
@@ -136,15 +135,34 @@ class PokemonController {
   };
 
   static useRune = (req, res) => {
-    // const { idTrainer } = req.body;
     const { pokemonName } = req.body;
-    const payloadAddPokemon = {
-      body: {
-        namePokemon: pokemonName,
-      },
-    };
-
-    this.addPokemonWild(payloadAddPokemon, res);
+    const { idTrainer } = req.body;
+    models.rune_trainer
+      .findByPokemonName(pokemonName, idTrainer)
+      .then(([result]) => {
+        if (result.length === 0) {
+          res.status(201).send({ status: "noRune" });
+        } else {
+          models.rune_trainer
+            .updateDownQuantity(result[0].idPokemon, idTrainer, 1)
+            .then(([resultUpdate]) => {
+              if (resultUpdate.affectedRows === 0) {
+                res.status(201).send({ status: "noRune" });
+              } else {
+                const payloadAddPokemon = {
+                  body: {
+                    namePokemon: pokemonName,
+                  },
+                };
+                this.addPokemonWild(payloadAddPokemon, res);
+              }
+            });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
   };
 
   static selectRandomPokemon(rows) {

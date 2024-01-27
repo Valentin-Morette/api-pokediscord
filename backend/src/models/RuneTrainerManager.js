@@ -10,6 +10,16 @@ class RuneTrainerManager extends AbstractManager {
     );
   }
 
+  findByPokemonName(name, idTrainer) {
+    return this.connection.query(
+      `SELECT * 
+       FROM ${RuneTrainerManager.table} AS tp
+       JOIN pokemon AS p ON tp.idPokemon = p.id
+       WHERE p.name = ? AND tp.idTrainer = ?`,
+      [name, idTrainer]
+    );
+  }
+
   insert(rune, quantity = 1) {
     return this.connection.query(
       `insert into ${RuneTrainerManager.table} (idPokemon, idTrainer, isShiny, quantity) values (?, ?, ?, ?)
