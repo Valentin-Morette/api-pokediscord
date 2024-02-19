@@ -41,6 +41,7 @@ router.post("/trainer/pokemon/trade", TrainerController.tradePokemon);
 router.put("/trainer/:id", TrainerController.edit);
 router.delete("/trainer/:id", TrainerController.delete);
 
+router.get("/rune/:idDiscordTrainer", RuneTrainerController.readByTrainer);
 router.post("/rune/buy", RuneTrainerController.buy);
 router.post("/rune/use", PokemonController.useRune);
 

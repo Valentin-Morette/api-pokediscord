@@ -2,7 +2,7 @@ const models = require("../models");
 
 class RuneTrainerController {
   static browse = (req, res) => {
-    models.runeTrainer
+    models.rune_trainer
       .findAll()
       .then(([rows]) => {
         res.send(rows);
@@ -14,7 +14,7 @@ class RuneTrainerController {
   };
 
   static read = (req, res) => {
-    models.runeTrainer
+    models.rune_trainer
       .find(req.params.id)
       .then(([rows]) => {
         if (rows[0] == null) {
@@ -29,44 +29,27 @@ class RuneTrainerController {
       });
   };
 
-  static edit = (req, res) => {
-    const runeTrainer = req.body;
-
-    runeTrainer.id = parseInt(req.params.id, 10);
-
-    models.runeTrainer
-      .update(runeTrainer)
-      .then(([result]) => {
-        if (result.affectedRows === 0) {
-          res.sendStatus(404);
-        } else {
-          res.sendStatus(204);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
-  };
-
-  static add = (req, res) => {
-    const runeTrainer = req.body;
-
-    // TODO validations (length, format...)
-
-    models.runeTrainer
-      .insert(runeTrainer)
-      .then(([result]) => {
-        res.status(201).send({ ...runeTrainer, id: result.insertId });
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
+  static readByTrainer = (req, res) => {
+    let countRune = 0;
+    let sumRune = 0;
+    const idTrainer = req.params.idDiscordTrainer;
+    models.rune_trainer.countAndSumRuneByTrainer(idTrainer).then(([result]) => {
+      countRune = result[0].count;
+      sumRune = parseInt(result[0].sum, 10);
+      models.rune_trainer
+        .findAllByTrainer(idTrainer)
+        .then(([rows]) => {
+          res.send({ countRune, sumRune, rune: rows });
+        })
+        .catch((err) => {
+          console.error(err);
+          res.sendStatus(500);
+        });
+    });
   };
 
   static delete = (req, res) => {
-    models.runeTrainer
+    models.rune_trainer
       .delete(req.params.id)
       .then(() => {
         res.sendStatus(204);
@@ -84,6 +67,8 @@ class RuneTrainerController {
       .then(([rowPokemon]) => {
         if (rowPokemon.length === 0) {
           res.status(201).send({ status: "noExistPokemon" });
+        } else if (rowPokemon[0].catchRate === -100) {
+          res.status(201).send({ status: "noSell" });
         } else {
           models.trainer.find(idTrainer).then(([rowsTrainer]) => {
             const runePrice = rowPokemon[0].sellPrice * quantity * 3;
@@ -98,15 +83,10 @@ class RuneTrainerController {
                 idPokemon: rowPokemon[0].id,
                 isShiny: 0,
               };
-              models.rune_trainer
-                .insert(runeTrainer, quantity)
-                .then(([result]) => {
-                  res.status(201).send({ ...runeTrainer, id: result.insertId });
-                })
-                .catch((err) => {
-                  console.error(err);
-                  res.sendStatus(500);
-                });
+              models.rune_trainer.insert(runeTrainer, quantity);
+              res
+                .status(201)
+                .send({ status: "buy", ...runeTrainer, priceSend: runePrice });
             }
           });
         }
