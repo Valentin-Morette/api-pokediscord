@@ -5,11 +5,12 @@ class PokemonWildManager extends AbstractManager {
 
   insert(pokemonWild) {
     return this.connection.query(
-      `insert into ${PokemonWildManager.table} (idPokemon, dateAppear, catchCode, isEscape, isCatch) values (?, ?, ?, ?, ?)`,
+      `insert into ${PokemonWildManager.table} (idPokemon, dateAppear, catchCode, isShiny, isEscape, isCatch) values (?, ?, ?, ?, ?, ?)`,
       [
         pokemonWild.idPokemon,
         pokemonWild.dateAppear,
         pokemonWild.catchCode,
+        pokemonWild.isShiny,
         pokemonWild.isEscape,
         pokemonWild.isCatch,
       ]

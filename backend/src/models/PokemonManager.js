@@ -83,16 +83,22 @@ class PokemonManager extends AbstractManager {
     );
   }
 
-  findByTrainer(idTrainer) {
+  findByTrainer(idTrainer, isShiny = 0) {
     return this.connection.query(
-      `select p.*, pt.quantity from ${PokemonManager.table} as p inner join pokemon_trainer as pt on p.id = pt.idPokemon where pt.idTrainer = ? and pt.quantity > 0 order by p.id asc`,
-      [idTrainer]
+      `SELECT p.*, pt.quantity 
+        FROM ${PokemonManager.table} AS p 
+        INNER JOIN pokemon_trainer AS pt ON p.id = pt.idPokemon 
+        WHERE pt.idTrainer = ? 
+        AND pt.quantity > 0 
+        AND pt.isShiny = ?
+        ORDER BY p.id ASC`,
+      [idTrainer, isShiny]
     );
   }
 
   findByName(name) {
     return this.connection.query(
-      `select * from ${PokemonManager.table} where name = ?`,
+      `SELECT * FROM ${PokemonManager.table} WHERE name = ?`,
       [name]
     );
   }

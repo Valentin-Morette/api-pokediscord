@@ -18,7 +18,7 @@ router.post("/pokeball/buy", PokeballController.buy);
 
 router.get("/pokemon", PokemonController.browse);
 router.get("/pokemon/:id", PokemonController.read);
-router.get("/pokemon/trainer/:id", PokemonController.readByTrainer);
+router.get("/pokemon/trainer/:id/:type", PokemonController.readByTrainer);
 router.post("/pokemon", PokemonController.add);
 router.post("/pokemon/catch", PokemonController.catchPokemon);
 router.post("/pokemon/evolve", PokemonController.evolvePokemon);

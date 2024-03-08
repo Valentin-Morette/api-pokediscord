@@ -32,6 +32,7 @@ class PokemonController {
   };
 
   static readByTrainer = (req, res) => {
+    const isShiny = req.params.type === "shiny" ? 1 : 0;
     let countPokemon = 0;
     let sumPokemon = 0;
     models.pokemon_trainer
@@ -40,7 +41,7 @@ class PokemonController {
         countPokemon = result[0].count;
         sumPokemon = parseInt(result[0].sum, 10);
         models.pokemon
-          .findByTrainer(req.params.id)
+          .findByTrainer(req.params.id, isShiny)
           .then(([rows]) => {
             res.send({ countPokemon, sumPokemon, pokemon: rows });
           })
@@ -121,7 +122,11 @@ class PokemonController {
         pokemonData = this.selectRandomPokemon(rows);
       }
 
-      const pokemonWild = this.createPokemonWildObject(pokemonData);
+      let isShiny = 0;
+      if (pokemonData.shinyRate !== null) {
+        isShiny = this.ifIsShiny(pokemonData.shinyRate);
+      }
+      const pokemonWild = this.createPokemonWildObject(pokemonData, isShiny);
       const [resultInsert] = await models.pokemon_wild.insert(pokemonWild);
       res.status(201).send({
         id: resultInsert.insertId,
@@ -165,6 +170,14 @@ class PokemonController {
       });
   };
 
+  static ifIsShiny(shinyRate) {
+    const randomNum = Math.floor(Math.random() * 1000);
+    if (randomNum <= shinyRate) {
+      return 1;
+    }
+    return 0;
+  }
+
   static selectRandomPokemon(rows) {
     const sumSpawnChance = rows.reduce((acc, row) => acc + row.spawnChance, 0);
     const randomSpawnChance = Math.floor(Math.random() * sumSpawnChance);
@@ -179,9 +192,10 @@ class PokemonController {
     return rows[0];
   }
 
-  static createPokemonWildObject(pokemonData) {
+  static createPokemonWildObject(pokemonData, isShiny = 0) {
     return {
       idPokemon: pokemonData.id,
+      isShiny,
       isCatch: 0,
       isEscape: 0,
       catchCode: uuidv4(),
@@ -317,12 +331,11 @@ class PokemonController {
                   }
 
                   const randomCatch = Math.floor(Math.random() * 100);
-
                   if (randomCatch <= catchChance) {
                     models.pokemon_trainer.insert({
                       idPokemon: result[0].idPokemon,
                       idTrainer,
-                      isShiny: 0,
+                      isShiny: result[0].isShiny,
                     });
                     models.pokemon_wild
                       .updateByCatchCode(catchCode, 1, 0)
