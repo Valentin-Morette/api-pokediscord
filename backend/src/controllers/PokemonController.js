@@ -131,6 +131,7 @@ class PokemonController {
       res.status(201).send({
         id: resultInsert.insertId,
         catchCode: pokemonWild.catchCode,
+        isShiny: pokemonWild.isShiny,
         ...pokemonData,
       });
     } catch (err) {
@@ -220,6 +221,7 @@ class PokemonController {
   static evolvePokemon = (req, res) => {
     const { namePokemon } = req.body;
     const { idTrainer } = req.body;
+    const { isShiny } = req.body;
     models.pokemon.findByName(namePokemon).then(([pokemon]) => {
       if (pokemon.length === 0) {
         res.status(201).send({ status: "noExistPokemon" });
@@ -233,7 +235,8 @@ class PokemonController {
         .updateDownQuantity(
           pokemon[0].id,
           idTrainer,
-          pokemon[0].numberEvolution
+          pokemon[0].numberEvolution,
+          isShiny
         )
         .then(([result]) => {
           if (result.affectedRows === 0) {
@@ -251,12 +254,13 @@ class PokemonController {
             const pokemonTrainer = {
               idPokemon: idEvolution,
               idTrainer,
-              isShiny: 0,
+              isShiny,
             };
             models.pokemon_trainer.insert(pokemonTrainer).then(() => {
               models.pokemon.find(idEvolution).then(([resultPokemon]) => {
                 res.status(201).send({
                   status: "evolve",
+                  isShiny,
                   pokemonPreEvolve: pokemon[0],
                   pokemonEvolve: resultPokemon[0],
                 });
@@ -386,6 +390,7 @@ class PokemonController {
     const { namePokemon } = req.body;
     const { idTrainer } = req.body;
     const { quantity } = req.body;
+    const { isShiny } = req.body;
     let idPokemon = 0;
     models.pokemon.findByName(namePokemon).then(([resultId]) => {
       if (resultId.length === 0) {
@@ -406,7 +411,8 @@ class PokemonController {
                   models.pokemon_trainer.delete(idPokemon, idTrainer);
                 }
                 models.pokemon.find(idPokemon).then(([resultPokemon]) => {
-                  const sellPrice = resultPokemon[0].sellPrice * quantity;
+                  const sellPrice =
+                    resultPokemon[0].sellPrice * quantity * (isShiny ? 10 : 1);
                   models.trainer.updateMoney(idTrainer, sellPrice).then(() => {
                     res.status(201).send({
                       status: "sell",

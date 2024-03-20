@@ -31,16 +31,16 @@ class PokemonTrainerManager extends AbstractManager {
     );
   }
 
-  updateDownQuantity(idPokemon, idTrainer, number) {
+  updateDownQuantity(idPokemon, idTrainer, number, isShiny = false) {
     return this.connection.query(
-      `update ${PokemonTrainerManager.table} set quantity = quantity - ? where idPokemon = ? AND idTrainer = ? AND quantity >= ?`,
-      [number, idPokemon, idTrainer, number]
+      `update ${PokemonTrainerManager.table} set quantity = quantity - ? where idPokemon = ? AND idTrainer = ? AND quantity >= ? AND isShiny = ?`,
+      [number, idPokemon, idTrainer, number, isShiny]
     );
   }
 
   countAndSumPokemonByTrainer(idTrainer) {
     return this.connection.query(
-      `select count(*) as count, sum(quantity) as sum from ${PokemonTrainerManager.table} where idTrainer = ?`,
+      `select count(*) as count, sum(quantity) as sum from ${PokemonTrainerManager.table} where idTrainer = ? and quantity > 0`,
       [idTrainer]
     );
   }
