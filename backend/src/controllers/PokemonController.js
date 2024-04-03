@@ -1,5 +1,4 @@
 /* eslint-disable prefer-destructuring */
-const { v4: uuidv4 } = require("uuid");
 const models = require("../models");
 
 class PokemonController {
@@ -129,8 +128,7 @@ class PokemonController {
       const pokemonWild = this.createPokemonWildObject(pokemonData, isShiny);
       const [resultInsert] = await models.pokemon_wild.insert(pokemonWild);
       res.status(201).send({
-        id: resultInsert.insertId,
-        catchCode: pokemonWild.catchCode,
+        idPokemonWild: resultInsert.insertId,
         isShiny: pokemonWild.isShiny,
         ...pokemonData,
       });
@@ -199,7 +197,6 @@ class PokemonController {
       isShiny,
       isCatch: 0,
       isEscape: 0,
-      catchCode: uuidv4(),
       dateAppear: new Date(),
     };
   }
@@ -302,11 +299,11 @@ class PokemonController {
   };
 
   static catchPokemon = (req, res) => {
-    const { catchCode } = req.body;
+    const { idPokemonWild } = req.body;
     const { idTrainer } = req.body;
     const { idBall } = req.body;
     models.pokemon_wild
-      .getByCatchCode(catchCode)
+      .getById(idPokemonWild)
       .then(([result]) => {
         if (result.length === 0) {
           res.status(201).send({ status: "noExistPokemon" });
@@ -342,7 +339,7 @@ class PokemonController {
                       isShiny: result[0].isShiny,
                     });
                     models.pokemon_wild
-                      .updateByCatchCode(catchCode, 1, 0)
+                      .updateById(idPokemonWild, 1, 0)
                       .then(() => {
                         res.status(201).send({
                           status: "catch",
@@ -358,7 +355,7 @@ class PokemonController {
                     randomCatch <= catchChance + escapeChance
                   ) {
                     models.pokemon_wild
-                      .updateByCatchCode(catchCode, 0, 1)
+                      .updateById(idPokemonWild, 0, 1)
                       .then(() => {
                         res.status(201).send({
                           status: "escape",

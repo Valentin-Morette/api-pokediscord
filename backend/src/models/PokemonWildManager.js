@@ -5,11 +5,10 @@ class PokemonWildManager extends AbstractManager {
 
   insert(pokemonWild) {
     return this.connection.query(
-      `insert into ${PokemonWildManager.table} (idPokemon, dateAppear, catchCode, isShiny, isEscape, isCatch) values (?, ?, ?, ?, ?, ?)`,
+      `insert into ${PokemonWildManager.table} (idPokemon, dateAppear, isShiny, isEscape, isCatch) values (?, ?, ?, ?, ?)`,
       [
         pokemonWild.idPokemon,
         pokemonWild.dateAppear,
-        pokemonWild.catchCode,
         pokemonWild.isShiny,
         pokemonWild.isEscape,
         pokemonWild.isCatch,
@@ -17,17 +16,17 @@ class PokemonWildManager extends AbstractManager {
     );
   }
 
-  getByCatchCode(catchCode) {
+  getById(id) {
     return this.connection.query(
-      `select * from ${PokemonWildManager.table} where catchCode = ?`,
-      [catchCode]
+      `select * from ${PokemonWildManager.table} where id = ?`,
+      [id]
     );
   }
 
-  updateByCatchCode(catchCode, isCatch, isEscape) {
+  updateById(id, isCatch, isEscape) {
     return this.connection.query(
-      `update ${PokemonWildManager.table} set isCatch = ?, isEscape = ? where catchCode = ?`,
-      [isCatch, isEscape, catchCode]
+      `update ${PokemonWildManager.table} set isCatch = ?, isEscape = ? where id = ?`,
+      [isCatch, isEscape, id]
     );
   }
 
