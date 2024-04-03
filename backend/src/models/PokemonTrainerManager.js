@@ -24,13 +24,6 @@ class PokemonTrainerManager extends AbstractManager {
     );
   }
 
-  delete(idPokemon, idTrainer) {
-    return this.connection.query(
-      `delete from ${PokemonTrainerManager.table} where idPokemon = ? AND idTrainer = ?`,
-      [idPokemon, idTrainer]
-    );
-  }
-
   updateDownQuantity(idPokemon, idTrainer, number, isShiny = false) {
     return this.connection.query(
       `update ${PokemonTrainerManager.table} set quantity = quantity - ? where idPokemon = ? AND idTrainer = ? AND quantity >= ? AND isShiny = ?`,
@@ -38,10 +31,10 @@ class PokemonTrainerManager extends AbstractManager {
     );
   }
 
-  countAndSumPokemonByTrainer(idTrainer) {
+  countAndSumPokemonByTrainer(idTrainer, isShiny = false) {
     return this.connection.query(
-      `select count(*) as count, sum(quantity) as sum from ${PokemonTrainerManager.table} where idTrainer = ? and quantity > 0`,
-      [idTrainer]
+      `select count(*) as count, sum(quantity) as sum from ${PokemonTrainerManager.table} where idTrainer = ? and quantity > 0 AND isShiny = ?`,
+      [idTrainer, isShiny]
     );
   }
 

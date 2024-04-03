@@ -36,7 +36,7 @@ class PokemonController {
     let countPokemon = 0;
     let sumPokemon = 0;
     models.pokemon_trainer
-      .countAndSumPokemonByTrainer(req.params.id)
+      .countAndSumPokemonByTrainer(req.params.id, isShiny)
       .then(([result]) => {
         countPokemon = result[0].count;
         sumPokemon = parseInt(result[0].sum, 10);
@@ -399,29 +399,22 @@ class PokemonController {
       }
       idPokemon = resultId[0].id;
       models.pokemon_trainer
-        .updateDownQuantity(idPokemon, idTrainer, quantity)
+        .updateDownQuantity(idPokemon, idTrainer, quantity, isShiny)
         .then(([result]) => {
           if (result.affectedRows === 0) {
             res.status(201).send({ status: "noPokemon" });
           } else {
-            models.pokemon_trainer
-              .find(idPokemon, idTrainer)
-              .then(([resultFind]) => {
-                if (resultFind[0].quantity === 0) {
-                  models.pokemon_trainer.delete(idPokemon, idTrainer);
-                }
-                models.pokemon.find(idPokemon).then(([resultPokemon]) => {
-                  const sellPrice =
-                    resultPokemon[0].sellPrice * quantity * (isShiny ? 10 : 1);
-                  models.trainer.updateMoney(idTrainer, sellPrice).then(() => {
-                    res.status(201).send({
-                      status: "sell",
-                      pokemonName: resultPokemon[0].name,
-                      sellPrice,
-                    });
-                  });
+            models.pokemon.find(idPokemon).then(([resultPokemon]) => {
+              const sellPrice =
+                resultPokemon[0].sellPrice * quantity * (isShiny ? 3 : 1);
+              models.trainer.updateMoney(idTrainer, sellPrice).then(() => {
+                res.status(201).send({
+                  status: "sell",
+                  pokemonName: resultPokemon[0].name,
+                  sellPrice,
                 });
               });
+            });
           }
         })
         .catch((err) => {
