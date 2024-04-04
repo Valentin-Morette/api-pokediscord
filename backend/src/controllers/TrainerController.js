@@ -103,13 +103,14 @@ class TrainerController {
       .updateDownQuantity(
         accept ? trade.idPokemonPropose : trade.idPokemonRequest,
         accept ? trade.idTrainer : payload.idTrainer,
-        accept ? trade.quantityPokemonPropose : trade.quantityPokemonRequest
+        accept ? trade.quantityPokemonPropose : trade.quantityPokemonRequest,
+        accept ? trade.isShinyPropose : trade.isShinyRequest
       )
       .then(() => {
         const pokemondPropose = {
           idPokemon: accept ? trade.idPokemonRequest : trade.idPokemonPropose,
           idTrainer: accept ? trade.idTrainer : payload.idTrainer,
-          isShiny: 0,
+          isShiny: accept ? trade.isShinyRequest : trade.isShinyPropose,
         };
         models.pokemon_trainer.insert(
           pokemondPropose,
@@ -121,9 +122,9 @@ class TrainerController {
       });
   };
 
-  static verifyPokemon = (idTrainer, idPokemon, quantity) => {
+  static verifyPokemon = (idTrainer, idPokemon, quantity, isShiny) => {
     return models.pokemon_trainer
-      .findOnePokemonByTrainer(idTrainer, idPokemon)
+      .findOnePokemonByTrainer(idTrainer, idPokemon, isShiny)
       .then(([rows]) => {
         if (rows[0] == null || rows[0].quantity < quantity) {
           return false;
@@ -144,7 +145,8 @@ class TrainerController {
         this.verifyPokemon(
           payload.idTrainer,
           pokemonPropose.id,
-          payload.quantityPokemonPropose
+          payload.quantityPokemonPropose,
+          payload.pokemonProposeShiny
         ).then((isValid) => {
           if (!isValid) {
             res.status(200).send({ status: "not enough pokemon propose" });
@@ -164,14 +166,20 @@ class TrainerController {
                   pokemonPropose.id,
                   pokemonRequest.id,
                   payload.quantityPokemonPropose,
-                  payload.quantityPokemonRequest
+                  payload.quantityPokemonRequest,
+                  payload.pokemonProposeShiny,
+                  payload.pokemonRequestShiny
                 )
                 .then(([result]) => {
                   res.status(201).send({
                     status: "success",
                     idTrade: result.insertId,
-                    imgPokemonPropose: pokemonPropose.img,
-                    imgPokemonRequest: pokemonRequest.img,
+                    imgPokemonPropose: payload.pokemonProposeShiny
+                      ? pokemonPropose.imgShiny
+                      : pokemonPropose.img,
+                    imgPokemonRequest: payload.pokemonRequestShiny
+                      ? pokemonRequest.imgShiny
+                      : pokemonRequest.img,
                   });
                 })
                 .catch((err) => {
@@ -192,14 +200,16 @@ class TrainerController {
           this.verifyPokemon(
             trade.idTrainer,
             trade.idPokemonPropose,
-            trade.quantityPokemonPropose
+            trade.quantityPokemonPropose,
+            trade.isShinyPropose
           )
             .then((isValidForPropose) => {
               if (isValidForPropose) {
                 return this.verifyPokemon(
                   payload.idTrainer,
                   trade.idPokemonRequest,
-                  trade.quantityPokemonRequest
+                  trade.quantityPokemonRequest,
+                  trade.isShinyRequest
                 );
               }
               res.status(200).send({ status: "not enough pokemon propose" });

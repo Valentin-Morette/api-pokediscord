@@ -8,16 +8,20 @@ class TradeManager extends AbstractManager {
     idPokemonPropose,
     idPokemonRequest,
     quantityPokemonPropose,
-    quantityPokemonRequest
+    quantityPokemonRequest,
+    isShinyPropose,
+    isShinyRequest
   ) {
     return this.connection.query(
-      `insert into ${TradeManager.table} (idTrainer, idPokemonPropose, idPokemonRequest, quantityPokemonPropose, quantityPokemonRequest, isAccept) values (?, ?, ?, ?, ?, 0)`,
+      `insert into ${TradeManager.table} (idTrainer, idPokemonPropose, idPokemonRequest, quantityPokemonPropose, quantityPokemonRequest, isShinyPropose, isShinyRequest, isAccept) values (?, ?, ?, ?, ?, ?, ?, 0)`,
       [
         idTrainer,
         idPokemonPropose,
         idPokemonRequest,
         quantityPokemonPropose,
         quantityPokemonRequest,
+        isShinyPropose,
+        isShinyRequest,
       ]
     );
   }

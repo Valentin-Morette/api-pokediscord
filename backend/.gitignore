@@ -1,3 +1,5 @@
 node_modules
 .env
 .vercel
+*.http
+http_test

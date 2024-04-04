@@ -38,10 +38,10 @@ class PokemonTrainerManager extends AbstractManager {
     );
   }
 
-  findOnePokemonByTrainer(idTrainer, idPokemon) {
+  findOnePokemonByTrainer(idTrainer, idPokemon, isShiny = false) {
     return this.connection.query(
-      `select * from ${PokemonTrainerManager.table} where idTrainer = ? AND idPokemon = ?`,
-      [idTrainer, idPokemon]
+      `select * from ${PokemonTrainerManager.table} where idTrainer = ? AND idPokemon = ? AND isShiny = ?`,
+      [idTrainer, idPokemon, isShiny]
     );
   }
 }
