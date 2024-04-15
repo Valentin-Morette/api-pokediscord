@@ -33,8 +33,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 // Serve REACT APP
 app.use(express.static(path.join(__dirname, "..", "..", "frontend", "dist")));
 
-// Utilisez le middleware apiKeyMiddleware avant les routes de votre API
-app.use("/api", apiKeyMiddleware); // Assurez-vous que ce chemin corresponde à la base de vos routes d'API
+app.use(apiKeyMiddleware);
 
 // API routes
 app.use(router);
