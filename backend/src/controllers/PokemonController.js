@@ -330,7 +330,6 @@ class PokemonController {
                   if (catchChance < 0) {
                     catchChance = 1;
                   }
-
                   const randomCatch = Math.floor(Math.random() * 100);
                   if (randomCatch <= catchChance) {
                     models.pokemon_trainer.insert({
@@ -341,10 +340,16 @@ class PokemonController {
                     models.pokemon_wild
                       .updateById(idPokemonWild, 1, 0)
                       .then(() => {
-                        res.status(201).send({
-                          status: "catch",
-                          pokemonName: pokemonResult[0][0].name,
-                        });
+                        models.trainer
+                          .findHasFirstCatch(idTrainer)
+                          .then(([resultCatch]) => {
+                            models.trainer.updateFirstCatch(idTrainer);
+                            res.status(201).send({
+                              status: "catch",
+                              pokemonName: pokemonResult[0][0].name,
+                              sendTuto: resultCatch[0].hasFirstCatch === 0,
+                            });
+                          });
                       })
                       .catch((err) => {
                         console.error(err);

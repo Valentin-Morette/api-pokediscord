@@ -5,29 +5,15 @@ class TrainerManager extends AbstractManager {
 
   insert(trainer) {
     return this.connection.query(
-      `insert into ${TrainerManager.table} (id,idDiscord, name, money, point, level) values (?, ?, ?, ?, ?, ?)`,
-      [
-        trainer.id,
-        trainer.idDiscord,
-        trainer.name,
-        trainer.money,
-        trainer.point,
-        trainer.level,
-      ]
+      `insert into ${TrainerManager.table} (id,idDiscord, name, money, hasFirstCatch) values (?, ?, ?, ?, 0)`,
+      [trainer.id, trainer.idDiscord, trainer.name, trainer.money]
     );
   }
 
-  update(trainer) {
+  updateFirstCatch(id) {
     return this.connection.query(
-      `update ${TrainerManager.table} set idDiscord = ?, name = ?, money = ?, point = ?, level = ? where id = ?`,
-      [
-        trainer.idDiscord,
-        trainer.name,
-        trainer.money,
-        trainer.point,
-        trainer.level,
-        trainer.id,
-      ]
+      `update ${TrainerManager.table} set hasFirstCatch = 1 where idDiscord = ?`,
+      [id]
     );
   }
 
@@ -48,6 +34,13 @@ class TrainerManager extends AbstractManager {
   find(idDiscord) {
     return this.connection.query(
       `select * from ${TrainerManager.table} where idDiscord = ?`,
+      [idDiscord]
+    );
+  }
+
+  findHasFirstCatch(idDiscord) {
+    return this.connection.query(
+      `select hasFirstCatch from ${TrainerManager.table} where idDiscord = ?`,
       [idDiscord]
     );
   }

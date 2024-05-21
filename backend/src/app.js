@@ -5,11 +5,10 @@ const router = require("./router");
 
 const app = express();
 
-// Middleware pour vérifier la clé API
 const apiKeyMiddleware = (req, res, next) => {
-  const apiKey = req.get("X-API-KEY"); // Obtient la clé API de l'en-tête de la requête
+  const apiKey = req.get("X-API-KEY");
   if (apiKey && apiKey === process.env.API_KEY) {
-    next(); // Si la clé API est correcte, continue vers le prochain middleware
+    next();
   } else {
     res
       .status(401)
@@ -17,7 +16,6 @@ const apiKeyMiddleware = (req, res, next) => {
   }
 };
 
-// use some application-level middlewares
 app.use(
   cors({
     origin: process.env.FRONTEND_URL ?? "http://localhost:3000",
