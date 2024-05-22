@@ -39,9 +39,9 @@ class RuneTrainerManager extends AbstractManager {
 
   insert(rune, quantity = 1) {
     return this.connection.query(
-      `insert into ${RuneTrainerManager.table} (idPokemon, idTrainer, isShiny, quantity) values (?, ?, ?, ?)
+      `insert into ${RuneTrainerManager.table} (idPokemon, idTrainer, quantity) values (?, ?, ?)
       ON DUPLICATE KEY UPDATE quantity = quantity + ?;`,
-      [rune.idPokemon, rune.idTrainer, rune.isShiny, quantity, quantity]
+      [rune.idPokemon, rune.idTrainer, quantity, quantity]
     );
   }
 

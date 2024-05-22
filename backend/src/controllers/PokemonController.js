@@ -53,7 +53,6 @@ class PokemonController {
     const zone = req.body.nameZone;
     const type = req.body.spawnType;
     const pokemonName = req.body.namePokemon;
-
     try {
       let pokemonData;
 

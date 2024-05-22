@@ -41,7 +41,6 @@ class RuneTrainerController {
               const runeTrainer = {
                 idTrainer,
                 idPokemon: rowPokemon[0].id,
-                isShiny: 0,
               };
               models.rune_trainer.insert(runeTrainer, quantity);
               res
