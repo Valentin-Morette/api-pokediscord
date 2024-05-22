@@ -44,6 +44,13 @@ class TrainerManager extends AbstractManager {
       [idDiscord]
     );
   }
+
+  delete(idDiscord) {
+    return this.connection.query(
+      `delete from ${TrainerManager.table} where idDiscord = ?`,
+      [idDiscord]
+    );
+  }
 }
 
 module.exports = TrainerManager;

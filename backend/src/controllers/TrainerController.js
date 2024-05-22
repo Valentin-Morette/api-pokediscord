@@ -194,6 +194,18 @@ class TrainerController {
       });
     }
   };
+
+  static delete = (req, res) => {
+    models.trainer
+      .delete(req.params.idDiscord)
+      .then(() => {
+        res.sendStatus(204);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
 }
 
 module.exports = TrainerController;
