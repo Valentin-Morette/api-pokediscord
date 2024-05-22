@@ -1,34 +1,6 @@
 const models = require("../models");
 
 class RuneTrainerController {
-  static browse = (req, res) => {
-    models.rune_trainer
-      .findAll()
-      .then(([rows]) => {
-        res.send(rows);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
-  };
-
-  static read = (req, res) => {
-    models.rune_trainer
-      .find(req.params.id)
-      .then(([rows]) => {
-        if (rows[0] == null) {
-          res.sendStatus(404);
-        } else {
-          res.send(rows[0]);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
-  };
-
   static readByTrainer = (req, res) => {
     let countRune = 0;
     let sumRune = 0;
@@ -46,18 +18,6 @@ class RuneTrainerController {
           res.sendStatus(500);
         });
     });
-  };
-
-  static delete = (req, res) => {
-    models.rune_trainer
-      .delete(req.params.id)
-      .then(() => {
-        res.sendStatus(204);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
   };
 
   static buy = (req, res) => {

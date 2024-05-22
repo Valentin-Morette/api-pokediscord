@@ -1,18 +1,6 @@
 const models = require("../models");
 
 class TrainerController {
-  static browse = (req, res) => {
-    models.trainer
-      .findAll()
-      .then(([rows]) => {
-        res.send(rows);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
-  };
-
   static read = (req, res) => {
     models.trainer
       .find(req.params.idDiscord)
