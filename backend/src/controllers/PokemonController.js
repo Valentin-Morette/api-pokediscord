@@ -170,6 +170,7 @@ class PokemonController {
     const { namePokemon } = req.body;
     const { idTrainer } = req.body;
     const { isShiny } = req.body;
+    const { quantity } = req.body;
     models.pokemon.findByName(namePokemon).then(([pokemon]) => {
       if (pokemon.length === 0) {
         res.status(201).send({ status: "noExistPokemon" });
@@ -183,7 +184,7 @@ class PokemonController {
         .updateDownQuantity(
           pokemon[0].id,
           idTrainer,
-          pokemon[0].numberEvolution,
+          pokemon[0].numberEvolution * quantity,
           isShiny
         )
         .then(([result]) => {
@@ -204,7 +205,7 @@ class PokemonController {
               idTrainer,
               isShiny,
             };
-            models.pokemon_trainer.insert(pokemonTrainer).then(() => {
+            models.pokemon_trainer.insert(pokemonTrainer, quantity).then(() => {
               models.pokemon.find(idEvolution).then(([resultPokemon]) => {
                 res.status(201).send({
                   status: "evolve",
