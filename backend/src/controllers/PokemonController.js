@@ -166,63 +166,161 @@ class PokemonController {
       });
   };
 
-  static evolvePokemon = (req, res) => {
-    const { namePokemon } = req.body;
-    const { idTrainer } = req.body;
-    const { isShiny } = req.body;
-    const { quantity } = req.body;
-    models.pokemon.findByName(namePokemon).then(([pokemon]) => {
+  static evolvePokemon = async (req, res) => {
+    const { namePokemon, idTrainer, isShiny, max } = req.body;
+    let { quantity } = req.body;
+
+    try {
+      const [pokemon] = await models.pokemon.findByName(namePokemon);
       if (pokemon.length === 0) {
         res.status(201).send({ status: "noExistPokemon" });
         return;
       }
-      if (pokemon[0].idEvolution === null) {
+      if (!pokemon[0].idEvolution) {
         res.status(201).send({ status: "noEvolution" });
         return;
       }
-      models.pokemon_trainer
-        .updateDownQuantity(
+
+      if (max) {
+        const [result] = await models.pokemon_trainer.findQuantity(
           pokemon[0].id,
           idTrainer,
-          pokemon[0].numberEvolution * quantity,
           isShiny
-        )
-        .then(([result]) => {
-          if (result.affectedRows === 0) {
-            res.status(201).send({
-              status: "noPokemon",
-              numberPokemon: pokemon[0].numberEvolution,
-            });
-          } else {
-            let { idEvolution } = pokemon[0];
-            // Evolution Evoli
-            if (idEvolution === 134) {
-              const randomNum = Math.floor(Math.random() * 3);
-              idEvolution = 134 + randomNum;
-            }
-            const pokemonTrainer = {
-              idPokemon: idEvolution,
-              idTrainer,
-              isShiny,
-            };
-            models.pokemon_trainer.insert(pokemonTrainer, quantity).then(() => {
-              models.pokemon.find(idEvolution).then(([resultPokemon]) => {
-                res.status(201).send({
-                  status: "evolve",
-                  isShiny,
-                  pokemonPreEvolve: pokemon[0],
-                  pokemonEvolve: resultPokemon[0],
-                });
-              });
-            });
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          res.sendStatus(500);
+        );
+        if (result.length === 0) {
+          res.status(201).send({
+            status: "noPokemon",
+            numberPokemon: pokemon[0].numberEvolution,
+            quantity: 1,
+          });
+          return;
+        }
+        quantity = Math.floor(result[0].quantity / pokemon[0].numberEvolution);
+      }
+
+      const updateResult = await models.pokemon_trainer.updateDownQuantity(
+        pokemon[0].id,
+        idTrainer,
+        pokemon[0].numberEvolution * quantity,
+        isShiny
+      );
+
+      if (updateResult[0].affectedRows === 0) {
+        res.status(201).send({
+          status: "noPokemon",
+          numberPokemon: pokemon[0].numberEvolution,
+          quantity,
         });
-    });
+        return;
+      }
+
+      // Gestion de l'évolution spécifique d'Evoli
+      let idEvolution = pokemon[0].idEvolution;
+      if (idEvolution === 134) {
+        const randomNum = Math.floor(Math.random() * 3);
+        idEvolution += randomNum;
+      }
+
+      const pokemonTrainer = { idPokemon: idEvolution, idTrainer, isShiny };
+      await models.pokemon_trainer.insert(pokemonTrainer, quantity);
+
+      const [resultPokemon] = await models.pokemon.find(idEvolution);
+      res.status(201).send({
+        status: "evolve",
+        isShiny,
+        pokemonPreEvolve: pokemon[0],
+        pokemonEvolve: resultPokemon[0],
+        quantity,
+      });
+    } catch (err) {
+      console.error(err);
+      res.sendStatus(500);
+    }
   };
+
+  // static evolvePokemon = async (req, res) => {
+  //   const { namePokemon } = req.body;
+  //   const { idTrainer } = req.body;
+  //   const { isShiny } = req.body;
+  //   let { quantity } = req.body;
+  //   const { max } = req.body;
+  //   models.pokemon.findByName(namePokemon).then(([pokemon]) => {
+  //     if (pokemon.length === 0) {
+  //       res.status(201).send({ status: "noExistPokemon" });
+  //       return;
+  //     }
+  //     if (pokemon[0].idEvolution === null) {
+  //       res.status(201).send({ status: "noEvolution" });
+  //       return;
+  //     }
+  //     // if (max) {
+  //     //   models.pokemon_trainer
+  //     //     .findQuantity(pokemon[0].id, idTrainer, isShiny)
+  //     //     .then(([result]) => {
+  //     //       if (result.length === 0) {
+  //     //         res.status(201).send({ status: "noPokemon" });
+  //     //         return;
+  //     //       }
+  //     //       quantity = Math.floor(
+  //     //         result[0].quantity / pokemon[0].numberEvolution
+  //     //       );
+  //     //     });
+  //     // }
+  //     if (max) {
+  //       const [result] = await models.pokemon_trainer.findQuantity(
+  //         pokemon[0].id,
+  //         idTrainer,
+  //         isShiny
+  //       );
+  //       if (result.length === 0) {
+  //         res.status(201).send({ status: "noPokemon" });
+  //         return;
+  //       }
+  //       quantity = Math.floor(result[0].quantity / pokemon[0].numberEvolution);
+  //     }
+  //     models.pokemon_trainer
+  //       .updateDownQuantity(
+  //         pokemon[0].id,
+  //         idTrainer,
+  //         pokemon[0].numberEvolution * quantity,
+  //         isShiny
+  //       )
+  //       .then(([result]) => {
+  //         if (result.affectedRows === 0) {
+  //           res.status(201).send({
+  //             status: "noPokemon",
+  //             numberPokemon: pokemon[0].numberEvolution,
+  //           });
+  //         } else {
+  //           let { idEvolution } = pokemon[0];
+  //           // Evolution Evoli
+  //           if (idEvolution === 134) {
+  //             const randomNum = Math.floor(Math.random() * 3);
+  //             idEvolution = 134 + randomNum;
+  //           }
+  //           const pokemonTrainer = {
+  //             idPokemon: idEvolution,
+  //             idTrainer,
+  //             isShiny,
+  //           };
+  //           models.pokemon_trainer.insert(pokemonTrainer, quantity).then(() => {
+  //             models.pokemon.find(idEvolution).then(([resultPokemon]) => {
+  //               res.status(201).send({
+  //                 status: "evolve",
+  //                 isShiny,
+  //                 pokemonPreEvolve: pokemon[0],
+  //                 pokemonEvolve: resultPokemon[0],
+  //               });
+  //             });
+  //           });
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //         res.sendStatus(500);
+  //       });
+  //   });
+  // };
 
   static infoPokemon = async (req, res) => {
     try {
