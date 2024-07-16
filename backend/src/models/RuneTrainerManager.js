@@ -32,12 +32,12 @@ class RuneTrainerManager extends AbstractManager {
 
   countAndSumRuneByTrainer(idTrainer) {
     return this.connection.query(
-      `SELECT count(*) as count, sum(quantity) as sum FROM ${RuneTrainerManager.table} WHERE idTrainer = ?`,
+      `SELECT count(*) as count, sum(quantity) as sum FROM ${RuneTrainerManager.table} WHERE idTrainer = ? and quantity > 0`,
       [idTrainer]
     );
   }
 
-  insert(rune, quantity = 1) {
+  insertRune(rune, quantity = 1) {
     return this.connection.query(
       `insert into ${RuneTrainerManager.table} (idPokemon, idTrainer, quantity) values (?, ?, ?)
       ON DUPLICATE KEY UPDATE quantity = quantity + ?;`,
