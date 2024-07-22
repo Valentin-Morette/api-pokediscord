@@ -1,5 +1,8 @@
 /* eslint-disable prefer-destructuring */
+const NodeCache = require("node-cache");
 const models = require("../models");
+
+const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
 
 class PokemonController {
   static readByTrainer = (req, res) => {
@@ -167,7 +170,7 @@ class PokemonController {
   };
 
   static evolvePokemon = async (req, res) => {
-    const { namePokemon, idTrainer, isShiny, max } = req.body;
+    const { namePokemon, idTrainer, nameZone, isShiny, max } = req.body;
     let { quantity } = req.body;
 
     try {
@@ -179,6 +182,16 @@ class PokemonController {
       if (!pokemon[0].idEvolution) {
         res.status(201).send({ status: "noEvolution" });
         return;
+      }
+
+      // Gestion de l'évolution de Kangourex en MissingNo.
+      if (pokemon[0].id === 115) {
+        const [differentPokemon] =
+          await models.pokemon_trainer.countAndSumPokemonByTrainer(idTrainer);
+        if (differentPokemon[0].count < 151) {
+          res.status(201).send({ status: "noMaster" });
+          return;
+        }
       }
 
       if (max) {
@@ -217,8 +230,16 @@ class PokemonController {
       // Gestion de l'évolution spécifique d'Evoli
       let idEvolution = pokemon[0].idEvolution;
       if (idEvolution === 134) {
-        const randomNum = Math.floor(Math.random() * 3);
-        idEvolution += randomNum;
+        if (nameZone === "centrale") {
+          idEvolution = 135;
+        } else if (nameZone === "iles-ecume") {
+          idEvolution = 134;
+        } else if (nameZone === "route-victoire") {
+          idEvolution = 136;
+        } else {
+          const randomNum = Math.floor(Math.random() * 3);
+          idEvolution += randomNum;
+        }
       }
 
       const pokemonTrainer = { idPokemon: idEvolution, idTrainer, isShiny };
@@ -296,10 +317,31 @@ class PokemonController {
         return res.status(201).send({ status: "noBall" });
       }
 
-      const [pokemonResult, pokeballResult] = await Promise.all([
-        models.pokemon.find(pokemonWild.idPokemon),
-        models.pokeball.find(idBall),
-      ]);
+      const cacheKeyPokemon = `pokemon_${pokemonWild.idPokemon}`;
+      const cacheKeyPokeball = `pokeball_${idBall}`;
+
+      // Essayer de récupérer les données du cache
+      let pokemonResult = myCache.get(cacheKeyPokemon);
+      let pokeballResult = myCache.get(cacheKeyPokeball);
+
+      // Si les données ne sont pas dans le cache, les récupérer de la base de données
+      if (!pokemonResult || !pokeballResult) {
+        const results = await Promise.all([
+          models.pokemon.find(pokemonWild.idPokemon),
+          models.pokeball.find(idBall),
+        ]);
+
+        pokemonResult = results[0];
+        pokeballResult = results[1];
+
+        // Mettre en cache les nouvelles données récupérées
+        if (pokemonResult) {
+          myCache.set(cacheKeyPokemon, pokemonResult);
+        }
+        if (pokeballResult) {
+          myCache.set(cacheKeyPokeball, pokeballResult);
+        }
+      }
 
       let catchChance =
         pokemonResult[0][0].catchRate + pokeballResult[0][0].catchBonus;
@@ -352,96 +394,6 @@ class PokemonController {
       return res.sendStatus(500);
     }
   };
-
-  // static catchPokemon = (req, res) => {
-  //   const { idPokemonWild } = req.body;
-  //   const { idTrainer } = req.body;
-  //   const { idBall } = req.body;
-  //   models.pokemon_wild
-  //     .getById(idPokemonWild)
-  //     .then(([result]) => {
-  //       if (result.length === 0) {
-  //         res.status(201).send({ status: "noExistPokemon" });
-  //       } else if (result[0].isCatch === 1) {
-  //         res.status(201).send({ status: "alreadyCatch" });
-  //       } else if (result[0].isEscape === 1) {
-  //         res.status(201).send({ status: "alreadyEscape" });
-  //       } else {
-  //         models.pokeball_trainer
-  //           .updateQuantity(idBall, idTrainer, 1)
-  //           .then(([resultUpdate]) => {
-  //             if (resultUpdate.affectedRows === 0) {
-  //               res.status(201).send({ status: "noBall" });
-  //             } else {
-  //               Promise.all([
-  //                 models.pokemon.find(result[0].idPokemon),
-  //                 models.pokeball.find(idBall),
-  //               ]).then(([pokemonResult, pokeballResult]) => {
-  //                 let catchChance = 0;
-  //                 let escapeChance = 0;
-  //                 catchChance += pokemonResult[0][0].catchRate;
-  //                 escapeChance += pokemonResult[0][0].escapeRate;
-  //                 catchChance += pokeballResult[0][0].catchBonus;
-  //                 if (catchChance < 0) {
-  //                   catchChance = 1;
-  //                 }
-  //                 const randomCatch = Math.floor(Math.random() * 100);
-  //                 if (randomCatch <= catchChance) {
-  //                   models.pokemon_trainer.insert({
-  //                     idPokemon: result[0].idPokemon,
-  //                     idTrainer,
-  //                     isShiny: result[0].isShiny,
-  //                   });
-  //                   models.pokemon_wild
-  //                     .updateById(idPokemonWild, 1, 0)
-  //                     .then(() => {
-  //                       models.trainer
-  //                         .findHasFirstCatch(idTrainer)
-  //                         .then(([resultCatch]) => {
-  //                           models.trainer.updateFirstCatch(idTrainer);
-  //                           res.status(201).send({
-  //                             status: "catch",
-  //                             pokemonName: pokemonResult[0][0].name,
-  //                             sendTuto: resultCatch[0].hasFirstCatch === 0,
-  //                           });
-  //                         });
-  //                     })
-  //                     .catch((err) => {
-  //                       console.error(err);
-  //                       res.sendStatus(500);
-  //                     });
-  //                 } else if (
-  //                   randomCatch > catchChance &&
-  //                   randomCatch <= catchChance + escapeChance
-  //                 ) {
-  //                   models.pokemon_wild
-  //                     .updateById(idPokemonWild, 0, 1)
-  //                     .then(() => {
-  //                       res.status(201).send({
-  //                         status: "escape",
-  //                         pokemonName: pokemonResult[0][0].name,
-  //                       });
-  //                     })
-  //                     .catch((err) => {
-  //                       console.error(err);
-  //                       res.sendStatus(500);
-  //                     });
-  //                 } else {
-  //                   res.status(201).send({
-  //                     status: "noCatch",
-  //                     pokemonName: pokemonResult[0][0].name,
-  //                   });
-  //                 }
-  //               });
-  //             }
-  //           });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       res.sendStatus(500);
-  //     });
-  // };
 
   static sellPokemon = async (req, res) => {
     const { namePokemon, idTrainer, isShiny, max } = req.body;
