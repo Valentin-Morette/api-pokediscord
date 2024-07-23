@@ -20,6 +20,7 @@ router.post("/pokemon", PokemonController.add);
 router.post("/pokemon/catch", PokemonController.catchPokemon);
 router.post("/pokemon/evolve", PokemonController.evolvePokemon);
 router.post("/pokemon/info", PokemonController.infoPokemon);
+router.post("/pokemon/quantity", PokemonController.quantityPokemon);
 router.post("/pokemon/sell", PokemonController.sellPokemon);
 router.post("/pokemon/wild", PokemonController.addPokemonWild);
 router.post("/pokemon/zone", PokemonController.findAllInZone);

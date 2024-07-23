@@ -169,6 +169,29 @@ class PokemonController {
       });
   };
 
+  static quantityPokemon = async (req, res) => {
+    const { idTrainer, pokemonName, isShiny } = req.body;
+    try {
+      const [result] = await models.pokemon.findByName(pokemonName);
+      if (result.length === 0) {
+        res.status(201).send({ status: "noExistPokemon" });
+        return;
+      }
+      const [resultQuantity] = await models.pokemon_trainer.findQuantity(
+        result[0].id,
+        idTrainer,
+        isShiny
+      );
+      res.status(201).send({
+        status: "quantity",
+        quantity: resultQuantity[0] ? resultQuantity[0].quantity : 0,
+      });
+    } catch (err) {
+      console.error(err);
+      res.sendStatus(500);
+    }
+  };
+
   static evolvePokemon = async (req, res) => {
     const { namePokemon, idTrainer, nameZone, isShiny, max } = req.body;
     let { quantity } = req.body;
