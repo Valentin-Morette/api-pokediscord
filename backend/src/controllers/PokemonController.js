@@ -2,7 +2,7 @@
 const NodeCache = require("node-cache");
 const models = require("../models");
 
-const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+const myCache = new NodeCache({ stdTTL: 86400, checkperiod: 90000 });
 
 class PokemonController {
   static readByTrainer = (req, res) => {
@@ -56,6 +56,7 @@ class PokemonController {
     const zone = req.body.nameZone;
     const type = req.body.spawnType;
     const pokemonName = req.body.namePokemon;
+
     try {
       let pokemonData;
 
@@ -67,12 +68,20 @@ class PokemonController {
         }
         pokemonData = result[0];
       } else {
-        const [rows] = await models.pokemon.findInZone(zone, type);
-        if (rows.length === 0) {
-          res.send(rows);
-          return;
+        const cacheKey = `zone_${zone}_type_${type}`;
+
+        const cachedResult = myCache.get(cacheKey);
+        if (cachedResult) {
+          pokemonData = this.selectRandomPokemon(cachedResult);
+        } else {
+          const [rows] = await models.pokemon.findInZone(zone, type);
+          if (rows.length === 0) {
+            res.send(rows);
+            return;
+          }
+          myCache.set(cacheKey, rows);
+          pokemonData = this.selectRandomPokemon(rows);
         }
-        pokemonData = this.selectRandomPokemon(rows);
       }
 
       let isShiny = 0;
