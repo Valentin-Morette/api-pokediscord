@@ -59,6 +59,8 @@ class PokeballController {
               if (rowsTrainer[0].money < rowsBall[0].buyingPrice * quantity) {
                 res.send({
                   status: "noMoney",
+                  money: rowsTrainer[0].money,
+                  price: rowsBall[0].buyingPrice * quantity,
                 });
               } else {
                 models.pokeball_trainer
