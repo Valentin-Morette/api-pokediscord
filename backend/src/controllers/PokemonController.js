@@ -204,7 +204,6 @@ class PokemonController {
   static evolvePokemon = async (req, res) => {
     const { namePokemon, idTrainer, nameZone, isShiny, max } = req.body;
     let { quantity } = req.body;
-
     try {
       const [pokemon] = await models.pokemon.findByName(namePokemon);
       if (pokemon.length === 0) {
@@ -460,7 +459,15 @@ class PokemonController {
           idTrainer,
           isShiny
         );
-        quantity = maxQtyResult[0] ? maxQtyResult[0].quantity - 1 : 0;
+        if (maxQtyResult[0].quantity === 0) {
+          res.status(201).send({ status: "noPokemon", quantity: 1 });
+          return;
+        }
+        if (maxQtyResult[0].quantity === 1) {
+          quantity = 1;
+        } else {
+          quantity = maxQtyResult[0].quantity - 1;
+        }
       }
 
       const [updateResult] = await models.pokemon_trainer.updateDownQuantity(
