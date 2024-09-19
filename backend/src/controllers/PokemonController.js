@@ -397,7 +397,7 @@ class PokemonController {
 
         let trainerResult = myCache.get(cacheKeyTrainer);
 
-        if (!trainerResult) {
+        if (!trainerResult || trainerResult[0].hasFirstCatch === 0) {
           const [resultCatch] = await models.trainer.findHasFirstCatch(
             idTrainer
           );

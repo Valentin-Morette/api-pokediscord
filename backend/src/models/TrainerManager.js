@@ -5,8 +5,14 @@ class TrainerManager extends AbstractManager {
 
   insert(trainer) {
     return this.connection.query(
-      `insert into ${TrainerManager.table} (id,idDiscord, name, money, hasFirstCatch) values (?, ?, ?, ?, 0)`,
-      [trainer.id, trainer.idDiscord, trainer.name, trainer.money]
+      `insert into ${TrainerManager.table} (id,idDiscord, name, money, hasFirstCatch, affiliateCode) values (?, ?, ?, ?, 0, ?)`,
+      [
+        trainer.id,
+        trainer.idDiscord,
+        trainer.name,
+        trainer.money,
+        trainer.affiliateCode,
+      ]
     );
   }
 
@@ -35,6 +41,37 @@ class TrainerManager extends AbstractManager {
     return this.connection.query(
       `select * from ${TrainerManager.table} where idDiscord = ?`,
       [idDiscord]
+    );
+  }
+
+  findTrainerByAffiliationCode(affiliationCode) {
+    return this.connection.query(
+      `select * from ${TrainerManager.table} where affiliateCode = ?`,
+      [affiliationCode]
+    );
+  }
+
+  affiliate(idTrainer, idTrainerGodfather) {
+    return this.connection.query(
+      `UPDATE ${TrainerManager.table} 
+       SET 
+           affiliateCodeUse = CASE 
+                               WHEN idDiscord = ? THEN ? 
+                               ELSE affiliateCodeUse 
+                             END,
+           money = CASE 
+                     WHEN idDiscord = ? THEN money + 10000 
+                     WHEN idDiscord = ? THEN money + 10000 
+                   END 
+       WHERE idDiscord IN (?, ?)`,
+      [
+        idTrainer,
+        idTrainerGodfather,
+        idTrainer,
+        idTrainerGodfather,
+        idTrainer,
+        idTrainerGodfather,
+      ]
     );
   }
 

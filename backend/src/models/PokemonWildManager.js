@@ -32,7 +32,7 @@ class PokemonWildManager extends AbstractManager {
 
   deleteByDate(date) {
     return this.connection.query(
-      `delete from ${PokemonWildManager.table} where dateAppear < ?`,
+      `delete from ${PokemonWildManager.table} where dateAppear < ? AND (isCatch = 1 OR isEscape = 1)`,
       [date]
     );
   }

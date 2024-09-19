@@ -19,6 +19,15 @@ class TrainerController {
 
   static add = (req, res) => {
     const payload = req.body;
+
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let affiliateCode = "";
+    for (let i = 0; i < 8; i += 1) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      affiliateCode += characters[randomIndex];
+    }
+    payload.trainer.affiliateCode = affiliateCode;
+
     models.trainer
       .insert(payload.trainer)
       .then(([result]) => {
@@ -74,6 +83,47 @@ class TrainerController {
       })
       .catch((err) => {
         console.error(err);
+      });
+  };
+
+  static affiliate = (req, res) => {
+    const { affiliateCode } = req.body;
+    const { idTrainer } = req.body;
+    models.trainer
+      .findTrainerByAffiliationCode(affiliateCode)
+      .then(([trainergodfather]) => {
+        if (trainergodfather[0] == null) {
+          res.status(200).send({ status: "noExistCode" });
+        } else {
+          models.trainer
+            .find(idTrainer)
+            .then(([trainer]) => {
+              if (trainer[0].affiliateCodeUse != null) {
+                res.status(200).send({ status: "alreadyAffiliate" });
+              } else {
+                models.trainer
+                  .affiliate(idTrainer, trainergodfather[0].idDiscord)
+                  .then(() => {
+                    res.status(200).send({
+                      status: "success",
+                      name: trainergodfather[0].name,
+                    });
+                  })
+                  .catch((err) => {
+                    console.error(err);
+                    res.sendStatus(500);
+                  });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              res.sendStatus(500);
+            });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
       });
   };
 
