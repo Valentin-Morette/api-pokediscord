@@ -100,6 +100,10 @@ class TrainerController {
             .then(([trainer]) => {
               if (trainer[0].affiliateCodeUse != null) {
                 res.status(200).send({ status: "alreadyAffiliate" });
+              } else if (
+                trainer[0].idDiscord === trainergodfather[0].idDiscord
+              ) {
+                res.status(200).send({ status: "sameTrainer" });
               } else {
                 models.trainer
                   .affiliate(idTrainer, trainergodfather[0].idDiscord)
