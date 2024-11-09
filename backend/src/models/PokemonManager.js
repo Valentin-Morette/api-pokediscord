@@ -7,19 +7,21 @@ class PokemonManager extends AbstractManager {
     return this.connection.query(
       `INSERT INTO
         ${PokemonManager.table}
-        (id, name, type1, type2, generation, img, sellPrice, catchRate, escapeRate)
+        (id, name, generation, img, imgShiny, sellPrice, shinyRate, catchRate, escapeRate, idEvolution, numberEvolution)
       VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         pokemon.id,
         pokemon.name,
-        pokemon.type1,
-        pokemon.type2,
         pokemon.generation,
         pokemon.img,
+        pokemon.imgShiny,
         pokemon.sellPrice,
+        pokemon.shinyRate,
         pokemon.catchRate,
         pokemon.escapeRate,
+        pokemon.idEvolution,
+        pokemon.numberEvolution,
       ]
     );
   }

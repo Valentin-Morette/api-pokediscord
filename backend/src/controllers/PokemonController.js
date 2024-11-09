@@ -26,17 +26,44 @@ class PokemonController {
       });
   };
 
-  static add = (req, res) => {
-    const pokemon = req.body;
-    models.pokemon
-      .insert(pokemon)
-      .then(([result]) => {
-        res.status(201).send({ ...pokemon, id: result.insertId });
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
+  static import = (req, res) => {
+    // Récupère le JSON du fichier gen2.json
+    const pokemonsList = require("../gen2.json");
+    const pokemonListClean = [];
+    // Parcours la liste de pokémons
+    pokemonsList.forEach((pokemon) => {
+      // Crée un objet avec les données du pokémon
+      const pokemonData = {
+        id: pokemon.pokedex_id,
+        name: pokemon.name.fr,
+        generation: pokemon.generation,
+        img: pokemon.sprites.regular,
+        imgShiny: pokemon.sprites.shiny,
+        sellPrice: 0,
+        shinyRate: null,
+        catchRate: 0,
+        escapeRate: 0,
+        idEvolution:
+          pokemon.evolution !== null && pokemon.evolution.next !== null
+            ? pokemon.evolution.next[0].pokedex_id
+            : null,
+        numberEvolution: null,
+      };
+      pokemonListClean.push(pokemonData);
+    });
+
+    pokemonListClean.forEach((pokemon) => {
+      models.pokemon
+        .insert(pokemon)
+        .then(() => {})
+        .catch((err) => {
+          console.error(err);
+          res.sendStatus(500);
+        });
+    });
+
+    // Envoie une réponse au client
+    res.sendStatus(201);
   };
 
   static findAllInZone = (req, res) => {
