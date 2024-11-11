@@ -86,7 +86,7 @@ class PokemonManager extends AbstractManager {
     );
   }
 
-  findByTrainer(idTrainer, isShiny = 0) {
+  findByTrainer(idTrainer, isShiny = 0, generation = 1) {
     return this.connection.query(
       `SELECT p.*, pt.quantity 
         FROM ${PokemonManager.table} AS p 
@@ -94,8 +94,9 @@ class PokemonManager extends AbstractManager {
         WHERE pt.idTrainer = ? 
         AND pt.quantity > 0 
         AND pt.isShiny = ?
+        AND p.generation = ?
         ORDER BY p.id ASC`,
-      [idTrainer, isShiny]
+      [idTrainer, isShiny, generation]
     );
   }
 

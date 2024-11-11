@@ -38,10 +38,16 @@ class PokemonTrainerManager extends AbstractManager {
     );
   }
 
-  countAndSumPokemonByTrainer(idTrainer, isShiny = false) {
+  countAndSumPokemonByTrainer(idTrainer, isShiny = false, generation = 1) {
     return this.connection.query(
-      `select count(*) as count, sum(quantity) as sum from ${PokemonTrainerManager.table} where idTrainer = ? and quantity > 0 AND isShiny = ?`,
-      [idTrainer, isShiny]
+      `SELECT COUNT(*) AS count, SUM(pt.quantity) AS sum 
+       FROM ${PokemonTrainerManager.table} AS pt
+       JOIN pokemon AS p ON pt.idPokemon = p.id 
+       WHERE pt.idTrainer = ? 
+         AND pt.quantity > 0 
+         AND pt.isShiny = ? 
+         AND p.generation = ?`,
+      [idTrainer, isShiny, generation]
     );
   }
 
