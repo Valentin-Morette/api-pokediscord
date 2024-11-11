@@ -28,6 +28,7 @@ class PokemonController {
 
   static import = (req, res) => {
     // Récupère le JSON du fichier gen2.json
+    // eslint-disable-next-line global-require
     const pokemonsList = require("../gen2.json");
     const pokemonListClean = [];
     // Parcours la liste de pokémons

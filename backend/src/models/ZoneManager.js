@@ -20,6 +20,13 @@ class ZoneManager extends AbstractManager {
       [name]
     );
   }
+
+  readByGeneration(generation) {
+    return this.connection.query(
+      `SELECT name FROM ${ZoneManager.table} WHERE generation = ?`,
+      [generation]
+    );
+  }
 }
 
 module.exports = ZoneManager;

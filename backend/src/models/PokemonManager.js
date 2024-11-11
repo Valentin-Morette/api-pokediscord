@@ -79,6 +79,7 @@ class PokemonManager extends AbstractManager {
       WHERE
         z.name = ?
         AND p.name != "MEW"
+        AND p.name != "CELEBI"
       ORDER BY
         p.id ASC`,
       [nameZone]

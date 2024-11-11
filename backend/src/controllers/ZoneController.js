@@ -23,6 +23,23 @@ class ZoneController {
       }
     });
   };
+
+  static readByGeneration = (req, res) => {
+    const { generation } = req.params;
+    models.zone
+      .readByGeneration(generation)
+      .then(([rows]) => {
+        const zones = [];
+        rows.forEach((row) => {
+          zones.push(row.name);
+        });
+        res.send(zones);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
 }
 
 module.exports = ZoneController;

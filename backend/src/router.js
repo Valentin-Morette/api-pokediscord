@@ -38,5 +38,6 @@ router.post("/rune/buy", RuneTrainerController.buy);
 router.post("/rune/use", PokemonController.useRune);
 
 router.get("/zone/pokemon/:name", ZoneController.findZoneByPokemonName);
+router.get("/zone/:generation", ZoneController.readByGeneration);
 
 module.exports = router;
