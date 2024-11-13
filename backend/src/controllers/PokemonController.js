@@ -296,6 +296,10 @@ class PokemonController {
           idEvolution = 134;
         } else if (nameZone === "route-victoire") {
           idEvolution = 136;
+        } else if (nameZone === "antre-noir") {
+          idEvolution = 197;
+        } else if (nameZone === "tour-cendree") {
+          idEvolution = 196;
         } else {
           const randomNum = Math.floor(Math.random() * 3);
           idEvolution += randomNum;
