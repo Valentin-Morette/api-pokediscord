@@ -106,6 +106,23 @@ class PokemonManager extends AbstractManager {
       [name]
     );
   }
+
+  // UPDATEGENERATION: Change max value to total number of pokemons in the database
+  findRandomPokemon() {
+    return this.connection.query(
+      `SELECT * 
+        FROM ${PokemonManager.table} 
+        WHERE id >= (
+          SELECT FLOOR(MAX(id) * RAND()) 
+          FROM ${PokemonManager.table} 
+          WHERE id <= 251
+        ) 
+      AND id <= 251
+      AND id NOT IN (151, 251)
+      ORDER BY id 
+      LIMIT 1;`
+    );
+  }
 }
 
 module.exports = PokemonManager;

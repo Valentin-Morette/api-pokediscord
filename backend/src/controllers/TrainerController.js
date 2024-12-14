@@ -19,7 +19,6 @@ class TrainerController {
 
   static add = (req, res) => {
     const payload = req.body;
-
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let affiliateCode = "";
     for (let i = 0; i < 8; i += 1) {
@@ -256,20 +255,79 @@ class TrainerController {
         if (rows[0] == null) {
           res.sendStatus(404);
         } else {
-          console.log(rows[0].lastGift);
-          let now = new Date();
-          console.log(now);
-
-          let lastGift = new Date(rows[0].lastGift);
+          const now = new Date();
+          const lastGift = new Date(rows[0].lastGift);
           if (now - lastGift < 86400000) {
             res.status(200).send({ status: "alreadyGift" });
             return;
           }
 
-          const amount = Math.floor(Math.random() * 40) * 100 + 1000;
-          models.trainer.updateMoney(req.params.idDiscord, amount).then(() => {
-            res.status(200).send({ status: "success", amount });
-          });
+          const moneyChance = 0;
+          const ballChance = 0;
+          const pokemonChance = 100;
+          const random = Math.floor(Math.random() * 100);
+
+          if (random <= moneyChance) {
+            const amount = Math.floor(Math.random() * 40) * 100 + 1000;
+            models.trainer
+              .updateMoney(req.params.idDiscord, amount)
+              .then(() => {
+                models.trainer.updateLastGift(req.params.idDiscord).then(() => {
+                  res.status(200).send({ status: "successMoney", amount });
+                });
+              });
+          } else if (random <= ballChance) {
+            models.pokeball
+              .findRandomForGift()
+              .then(([pokeballs]) => {
+                const pokeball = pokeballs[0];
+                const quantity = Math.floor(Math.random() * 15) + 6;
+                models.pokeball_trainer
+                  .insertMany(pokeball.id, req.params.idDiscord, quantity)
+                  .then(() => {
+                    models.trainer
+                      .updateLastGift(req.params.idDiscord)
+                      .then(() => {
+                        res
+                          .status(200)
+                          .send({ status: "successBall", pokeball, quantity });
+                      });
+                  });
+              })
+              .catch((err) => {
+                console.error(err);
+                res.sendStatus(500);
+              });
+          } else if (random <= pokemonChance) {
+            models.pokemon
+              .findRandomPokemon()
+              .then(([pokemons]) => {
+                const pokemon = pokemons[0];
+                const isShiny = Math.floor(Math.random() * 100) < 100;
+                models.pokemon_trainer
+                  .insert(
+                    {
+                      idPokemon: pokemon.id,
+                      idTrainer: req.params.idDiscord,
+                      isShiny,
+                    },
+                    1
+                  )
+                  .then(() => {
+                    models.trainer
+                      .updateLastGift(req.params.idDiscord)
+                      .then(() => {
+                        res
+                          .status(200)
+                          .send({ status: "successPokemon", pokemon, isShiny });
+                      });
+                  });
+              })
+              .catch((err) => {
+                console.error(err);
+                res.sendStatus(500);
+              });
+          }
         }
       })
       .catch((err) => {

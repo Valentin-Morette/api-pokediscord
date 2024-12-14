@@ -13,6 +13,12 @@ class PokeballManager extends AbstractManager {
     );
   }
 
+  findRandomForGift() {
+    return this.connection.query(
+      `SELECT * FROM ${PokeballManager.table} WHERE id IN (1, 2, 3) ORDER BY RAND() LIMIT 1`
+    );
+  }
+
   insert(pokeball) {
     return this.connection.query(
       `insert into ${PokeballManager.table} (title) values (?)`,
