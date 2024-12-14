@@ -30,9 +30,10 @@ router.post("/pokemon/zone", PokemonController.findAllInZone);
 router.delete("/pokemon/wild", PokemonController.deletePokemonWild);
 
 router.get("/trainer/:idDiscord", TrainerController.read);
+router.get("/trainer/gift/:idDiscord", TrainerController.gift);
 router.get("/trainer/verify/:idDiscord", TrainerController.verifyIdDiscord);
-router.post("/trainer/affiliate", TrainerController.affiliate);
 router.post("/trainer", TrainerController.add);
+router.post("/trainer/affiliate", TrainerController.affiliate);
 router.post("/trainer/pokemon/trade", TrainerController.tradePokemon);
 router.delete("/trainer/:idDiscord", TrainerController.delete);
 

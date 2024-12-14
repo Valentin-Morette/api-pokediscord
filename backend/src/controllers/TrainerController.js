@@ -249,6 +249,35 @@ class TrainerController {
     }
   };
 
+  static gift = (req, res) => {
+    models.trainer
+      .find(req.params.idDiscord)
+      .then(([rows]) => {
+        if (rows[0] == null) {
+          res.sendStatus(404);
+        } else {
+          console.log(rows[0].lastGift);
+          let now = new Date();
+          console.log(now);
+
+          let lastGift = new Date(rows[0].lastGift);
+          if (now - lastGift < 86400000) {
+            res.status(200).send({ status: "alreadyGift" });
+            return;
+          }
+
+          const amount = Math.floor(Math.random() * 40) * 100 + 1000;
+          models.trainer.updateMoney(req.params.idDiscord, amount).then(() => {
+            res.status(200).send({ status: "success", amount });
+          });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
   static delete = (req, res) => {
     models.trainer
       .delete(req.params.idDiscord)
