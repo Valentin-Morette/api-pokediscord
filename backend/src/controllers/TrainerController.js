@@ -262,8 +262,8 @@ class TrainerController {
             return;
           }
 
-          const moneyChance = 0;
-          const ballChance = 0;
+          const moneyChance = 60;
+          const ballChance = 90;
           const pokemonChance = 100;
           const random = Math.floor(Math.random() * 100);
 
@@ -303,7 +303,7 @@ class TrainerController {
               .findRandomPokemon()
               .then(([pokemons]) => {
                 const pokemon = pokemons[0];
-                const isShiny = Math.floor(Math.random() * 100) < 100;
+                const isShiny = Math.floor(Math.random() * 100) < 5;
                 models.pokemon_trainer
                   .insert(
                     {
