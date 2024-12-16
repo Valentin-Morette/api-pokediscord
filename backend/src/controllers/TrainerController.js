@@ -1,3 +1,4 @@
+const { time } = require("discord.js");
 const models = require("../models");
 
 class TrainerController {
@@ -257,17 +258,20 @@ class TrainerController {
         } else {
           const now = new Date();
           const lastGift = new Date(rows[0].lastGift);
-          if (now - lastGift < 86400000) {
-            res.status(200).send({ status: "alreadyGift" });
+          if (now - lastGift < 43200000) {
+            res.status(200).send({
+              status: "alreadyGift",
+              time: 43200000 - (now - lastGift),
+            });
             return;
           }
 
-          const moneyChance = 60;
-          const ballChance = 90;
+          const moneyChance = 45;
+          const ballChance = 80;
           const pokemonChance = 100;
           const random = Math.floor(Math.random() * 100);
 
-          if (random <= moneyChance) {
+          if (random < moneyChance) {
             const amount = Math.floor(Math.random() * 40) * 100 + 1000;
             models.trainer
               .updateMoney(req.params.idDiscord, amount)
@@ -276,7 +280,7 @@ class TrainerController {
                   res.status(200).send({ status: "successMoney", amount });
                 });
               });
-          } else if (random <= ballChance) {
+          } else if (random < ballChance) {
             models.pokeball
               .findRandomForGift()
               .then(([pokeballs]) => {
