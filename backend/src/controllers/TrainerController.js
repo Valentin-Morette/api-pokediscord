@@ -1,4 +1,3 @@
-const { time } = require("discord.js");
 const models = require("../models");
 
 class TrainerController {
@@ -259,10 +258,7 @@ class TrainerController {
           const now = new Date();
           const lastGift = new Date(rows[0].lastGift);
           if (now - lastGift < 43200000) {
-            res.status(200).send({
-              status: "alreadyGift",
-              time: 43200000 - (now - lastGift),
-            });
+            res.status(200).send({ status: "alreadyGift" });
             return;
           }
 
