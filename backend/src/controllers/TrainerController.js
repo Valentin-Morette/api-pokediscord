@@ -258,7 +258,10 @@ class TrainerController {
           const now = new Date();
           const lastGift = new Date(rows[0].lastGift);
           if (now - lastGift < 43200000) {
-            res.status(200).send({ status: "alreadyGift" });
+            res.status(200).send({
+              status: "alreadyGift",
+              remainning: 43200000 - (now - lastGift),
+            });
             return;
           }
 
