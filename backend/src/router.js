@@ -6,6 +6,7 @@ const {
   PokeballController,
   TrainerController,
   RuneTrainerController,
+  PokemonWildController,
 } = require("./controllers");
 
 const router = express.Router();
@@ -43,5 +44,7 @@ router.post("/rune/use", PokemonController.useRune);
 
 router.get("/zone/pokemon/:name", ZoneController.findZoneByPokemonName);
 router.get("/zone/:generation", ZoneController.readByGeneration);
+
+router.get("/recap", PokemonWildController.recap);
 
 module.exports = router;
