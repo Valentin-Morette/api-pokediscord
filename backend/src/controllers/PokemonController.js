@@ -28,9 +28,10 @@ class PokemonController {
   };
 
   static import = (req, res) => {
-    // Récupère le JSON du fichier gen2.json
+    // Récupère le JSON du fichier gen3.json
     // eslint-disable-next-line global-require
-    const pokemonsList = require("../gen2.json");
+    const pokemonsList = require("../gen3.json");
+
     const pokemonListClean = [];
     // Parcours la liste de pokémons
     pokemonsList.forEach((pokemon) => {
@@ -304,6 +305,21 @@ class PokemonController {
           const randomNum = Math.floor(Math.random() * 3);
           idEvolution += randomNum;
         }
+      }
+
+      // Gestion de l'évolution de chenipotte
+      if (idEvolution === 266) {
+        idEvolution = Math.random() < 0.5 ? 266 : 268;
+      }
+
+      // Gestion de l'évolution de coquiperl
+      if (idEvolution === 367) {
+        idEvolution = Math.random() < 0.5 ? 367 : 368;
+      }
+
+      // Gestion de l'évolution de Ningale
+      if (idEvolution === 291) {
+        idEvolution = Math.random() < 0.5 ? 291 : 292;
       }
 
       const pokemonTrainer = { idPokemon: idEvolution, idTrainer, isShiny };

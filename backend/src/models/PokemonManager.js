@@ -115,10 +115,10 @@ class PokemonManager extends AbstractManager {
         WHERE id >= (
           SELECT FLOOR(MAX(id) * RAND()) 
           FROM ${PokemonManager.table} 
-          WHERE id <= 251
+          WHERE id <= 386
         ) 
-      AND id <= 251
-      AND id NOT IN (151, 251)
+      AND id <= 386
+      AND id NOT IN (151, 251, 385)
       ORDER BY id 
       LIMIT 1;`
     );
