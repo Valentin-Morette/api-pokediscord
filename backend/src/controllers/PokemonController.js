@@ -442,29 +442,9 @@ class PokemonController {
 
         await models.pokemon_wild.updateById(idPokemonWild, 1, 0);
 
-        const cacheKeyTrainer = `trainer_${idTrainer}`;
-
-        let trainerResult = myCache.get(cacheKeyTrainer);
-
-        if (!trainerResult || trainerResult[0].hasFirstCatch === 0) {
-          const [resultCatch] = await models.trainer.findHasFirstCatch(
-            idTrainer
-          );
-          trainerResult = resultCatch;
-
-          if (trainerResult) {
-            myCache.set(cacheKeyTrainer, trainerResult);
-          }
-        }
-
-        if (trainerResult[0].hasFirstCatch === 0) {
-          await models.trainer.updateFirstCatch(idTrainer);
-        }
-
         return res.status(201).send({
           status: "catch",
           pokemonName: pokemonResult[0][0].name,
-          sendTuto: trainerResult[0].hasFirstCatch === 0,
         });
       }
 

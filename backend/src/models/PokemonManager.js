@@ -63,6 +63,7 @@ class PokemonManager extends AbstractManager {
     );
   }
 
+  // UPDATEGENERATION: Add Pokemon generation filter
   findAllInZone(nameZone) {
     return this.connection.query(
       `SELECT

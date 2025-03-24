@@ -5,7 +5,7 @@ class TrainerManager extends AbstractManager {
 
   insert(trainer) {
     return this.connection.query(
-      `insert into ${TrainerManager.table} (id,idDiscord, name, money, hasFirstCatch, affiliateCode) values (?, ?, ?, ?, 0, ?)`,
+      `insert into ${TrainerManager.table} (id,idDiscord, name, money, affiliateCode) values (?, ?, ?, ?, ?)`,
       [
         trainer.id,
         trainer.idDiscord,
@@ -13,13 +13,6 @@ class TrainerManager extends AbstractManager {
         trainer.money,
         trainer.affiliateCode,
       ]
-    );
-  }
-
-  updateFirstCatch(id) {
-    return this.connection.query(
-      `update ${TrainerManager.table} set hasFirstCatch = 1 where idDiscord = ?`,
-      [id]
     );
   }
 
@@ -61,16 +54,15 @@ class TrainerManager extends AbstractManager {
   affiliate(idTrainer, idTrainerGodfather) {
     return this.connection.query(
       `UPDATE ${TrainerManager.table} 
-       SET 
-           affiliateCodeUse = CASE 
-                               WHEN idDiscord = ? THEN ? 
-                               ELSE affiliateCodeUse 
-                             END,
-           money = CASE 
-                     WHEN idDiscord = ? THEN money + 10000 
-                     WHEN idDiscord = ? THEN money + 10000 
-                   END 
-       WHERE idDiscord IN (?, ?)`,
+        SET affiliateCodeUse = CASE 
+          WHEN idDiscord = ? THEN ? 
+          ELSE affiliateCodeUse 
+        END,
+        money = CASE 
+          WHEN idDiscord = ? THEN money + 10000 
+          WHEN idDiscord = ? THEN money + 10000 
+        END 
+        WHERE idDiscord IN (?, ?)`,
       [
         idTrainer,
         idTrainerGodfather,
@@ -79,13 +71,6 @@ class TrainerManager extends AbstractManager {
         idTrainer,
         idTrainerGodfather,
       ]
-    );
-  }
-
-  findHasFirstCatch(idDiscord) {
-    return this.connection.query(
-      `select hasFirstCatch from ${TrainerManager.table} where idDiscord = ?`,
-      [idDiscord]
     );
   }
 
