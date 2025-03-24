@@ -172,7 +172,7 @@ class PokemonController {
 
   static selectRandomPokemon(rows) {
     const sumSpawnChance = rows.reduce((acc, row) => acc + row.spawnChance, 0);
-    const randomSpawnChance = Math.floor(Math.random() * sumSpawnChance);
+    const randomSpawnChance = Math.floor(Math.random() * sumSpawnChance) + 1;
     let sumSpawnChance2 = 0;
 
     for (const row of rows) {
