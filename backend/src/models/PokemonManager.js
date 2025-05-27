@@ -43,7 +43,7 @@ class PokemonManager extends AbstractManager {
     );
   }
 
-  findInZone(zoneName, type) {
+  findInZone(zoneName) {
     return this.connection.query(
       `SELECT
         p.*,
@@ -57,18 +57,16 @@ class PokemonManager extends AbstractManager {
         zone AS z
         ON pz.idZone = z.id
       WHERE
-        z.name = ?
-        AND pz.spawnType = ?`,
-      [zoneName, type]
+        z.name = ?`,
+      [zoneName]
     );
   }
 
-  // UPDATEGENERATION: Add Pokemon generation filter
   findAllInZone(nameZone) {
     return this.connection.query(
       `SELECT
         p.name,
-        pz.spawnType
+        pz.spawnChance
       FROM
         zone AS z
       INNER JOIN
@@ -79,9 +77,6 @@ class PokemonManager extends AbstractManager {
         ON pz.idPokemon = p.id
       WHERE
         z.name = ?
-        AND p.name != "MEW"
-        AND p.name != "CELEBI"
-        AND p.name != "JIRACHI"
       ORDER BY
         p.id ASC`,
       [nameZone]
@@ -119,8 +114,8 @@ class PokemonManager extends AbstractManager {
           FROM ${PokemonManager.table} 
           WHERE id <= 386
         ) 
-      AND id <= 386
-      AND id NOT IN (151, 251, 385)
+      AND id <= 493
+      AND id NOT IN (151, 251, 385, 489)
       ORDER BY id 
       LIMIT 1;`
     );

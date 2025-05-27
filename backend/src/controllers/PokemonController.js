@@ -28,9 +28,9 @@ class PokemonController {
   };
 
   static import = (req, res) => {
-    // Récupère le JSON du fichier gen3.json
+    // Récupère le JSON du fichier gen4.json
     // eslint-disable-next-line global-require
-    const pokemonsList = require("../gen3.json");
+    const pokemonsList = require("../gen4.json");
 
     const pokemonListClean = [];
     // Parcours la liste de pokémons
@@ -84,7 +84,6 @@ class PokemonController {
 
   static addPokemonWild = async (req, res) => {
     const zone = req.body.nameZone;
-    const type = req.body.spawnType;
     const pokemonName = req.body.namePokemon;
 
     try {
@@ -98,13 +97,13 @@ class PokemonController {
         }
         pokemonData = result[0];
       } else {
-        const cacheKey = `zone_${zone}_type_${type}`;
+        const cacheKey = `zone_${zone}`;
 
         const cachedResult = myCache.get(cacheKey);
         if (cachedResult) {
           pokemonData = this.selectRandomPokemon(cachedResult);
         } else {
-          const [rows] = await models.pokemon.findInZone(zone, type);
+          const [rows] = await models.pokemon.findInZone(zone);
           if (rows.length === 0) {
             res.send(rows);
             return;
@@ -112,6 +111,26 @@ class PokemonController {
           myCache.set(cacheKey, rows);
           pokemonData = this.selectRandomPokemon(rows);
         }
+      }
+
+      // Provoque un spawn légendaire avec une chance de 1/1000
+      const legendarySpawn = Math.floor(Math.random() * 1000) === 512;
+      // Va chercher les data de la zone
+      if (legendarySpawn && pokemonName === undefined) {
+        // UPDATEGENERATION !
+        const legendaryPokemonByGeneration = {
+          1: 151, // Mew
+          2: 251, // Celebi
+          3: 385, // Jirachi
+          4: 489, // Phione
+        };
+        const [zoneData] = await models.zone.findByName(zone);
+        const generation = zoneData[0].generation;
+
+        pokemonData = await models.pokemon.find(
+          legendaryPokemonByGeneration[generation]
+        );
+        pokemonData = pokemonData[0][0];
       }
 
       let isShiny = 0;
@@ -467,6 +486,36 @@ class PokemonController {
     } catch (err) {
       console.error(err);
       return res.sendStatus(500);
+    }
+  };
+
+  static shinyLuck = async (req, res) => {
+    const { idDiscord } = req.body;
+    const { pokemonName } = req.body;
+    try {
+      const [result] = await models.trainer.find(idDiscord);
+      if (result[0].isPremium === 0) {
+        res.status(201).send({ status: "noPremium" });
+        return;
+      }
+      const [resultPokemon] = await models.pokemon.findByName(pokemonName);
+      if (resultPokemon.length === 0) {
+        res.status(201).send({ status: "noExistPokemon" });
+        return;
+      }
+      const shinyRate = resultPokemon[0].shinyRate;
+      if (shinyRate === null) {
+        res.status(201).send({ status: "noShinyRate" });
+        return;
+      }
+      res.status(201).send({
+        status: "shiny",
+        shinyRate,
+        imgShiny: resultPokemon[0].imgShiny,
+      });
+    } catch (err) {
+      console.error(err);
+      res.sendStatus(500);
     }
   };
 

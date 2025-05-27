@@ -1,4 +1,5 @@
 const express = require("express");
+const StripeController = require("./controllers/StripeController");
 
 const {
   PokemonController,
@@ -26,6 +27,7 @@ router.post("/pokemon/evolve", PokemonController.evolvePokemon);
 router.post("/pokemon/info", PokemonController.infoPokemon);
 router.post("/pokemon/quantity", PokemonController.quantityPokemon);
 router.post("/pokemon/sell", PokemonController.sellPokemon);
+router.post("/pokemon/shiny-luck", PokemonController.shinyLuck);
 router.post("/pokemon/wild", PokemonController.addPokemonWild);
 router.post("/pokemon/zone", PokemonController.findAllInZone);
 router.delete("/pokemon/wild", PokemonController.deletePokemonWild);
@@ -36,6 +38,7 @@ router.get("/trainer/verify/:idDiscord", TrainerController.verifyIdDiscord);
 router.post("/trainer", TrainerController.add);
 router.post("/trainer/affiliate", TrainerController.affiliate);
 router.post("/trainer/pokemon/trade", TrainerController.tradePokemon);
+router.post("/trainer/premium", TrainerController.addPremium);
 router.delete("/trainer/:idDiscord", TrainerController.delete);
 
 router.get("/rune/:idDiscordTrainer", RuneTrainerController.readByTrainer);
@@ -46,5 +49,10 @@ router.get("/zone/pokemon/:name", ZoneController.findZoneByPokemonName);
 router.get("/zone/:generation", ZoneController.readByGeneration);
 
 router.get("/recap", PokemonWildController.recap);
+
+router.post(
+  "/payment/create-checkout-session",
+  StripeController.createCheckoutSession
+);
 
 module.exports = router;

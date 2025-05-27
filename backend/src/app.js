@@ -5,7 +5,16 @@ const router = require("./router");
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, "public")));
+
+// eslint-disable-next-line consistent-return
 const apiKeyMiddleware = (req, res, next) => {
+  const exemptPaths = ["/payment-success", "/payment-cancel"];
+
+  if (exemptPaths.includes(req.path)) {
+    return next();
+  }
+
   const apiKey = req.get("X-API-KEY");
   if (apiKey && apiKey === process.env.API_KEY) {
     next();
@@ -35,13 +44,6 @@ app.use(apiKeyMiddleware);
 
 // API routes
 app.use(router);
-
-// Redirect all requests to the REACT app
-app.get("*", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "..", "..", "frontend", "dist", "index.html")
-  );
-});
 
 // ready to export
 module.exports = app;

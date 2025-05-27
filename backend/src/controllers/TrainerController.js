@@ -141,6 +141,19 @@ class TrainerController {
       });
   };
 
+  static addPremium = (req, res) => {
+    const { idDiscord, email } = req.body;
+    models.trainer
+      .addPremium(idDiscord, email)
+      .then(() => {
+        res.status(200).send({ status: "success" });
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
   static tradePokemon = (req, res) => {
     const payload = req.body;
     if (payload.type === "propose") {
@@ -257,10 +270,12 @@ class TrainerController {
         } else {
           const now = new Date();
           const lastGift = new Date(rows[0].lastGift);
-          if (now - lastGift < 43200000) {
+          const { isPremium } = rows[0];
+          const delay = isPremium ? 14400000 : 43200000;
+          if (now - lastGift < delay) {
             res.status(200).send({
               status: "alreadyGift",
-              remainning: 43200000 - (now - lastGift),
+              remainning: delay - (now - lastGift),
             });
             return;
           }

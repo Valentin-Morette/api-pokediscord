@@ -3,10 +3,18 @@ const AbstractManager = require("./AbstractManager");
 class ZoneManager extends AbstractManager {
   static table = "zone";
 
+  findByName(name) {
+    return this.connection.query(
+      `SELECT * FROM ${ZoneManager.table} WHERE name = ?`,
+      [name]
+    );
+  }
+
   findZoneByPokemonName(name) {
     return this.connection.query(
       `SELECT DISTINCT
-        z.name
+        z.name,
+        pz.spawnChance
       FROM
         ${ZoneManager.table} AS z
       INNER JOIN
