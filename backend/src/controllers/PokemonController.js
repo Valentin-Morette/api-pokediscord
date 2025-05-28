@@ -320,25 +320,21 @@ class PokemonController {
           idEvolution = 197;
         } else if (nameZone === "tour-cendree") {
           idEvolution = 196;
+        } else if (nameZone === "foret-vestigion") {
+          idEvolution = 470;
+        } else if (nameZone === "temple-frimapic") {
+          idEvolution = 471;
         } else {
-          const randomNum = Math.floor(Math.random() * 3);
-          idEvolution += randomNum;
+          // Si la zone n'est pas reconnue, on choisit une évolution aléatoire
+          const evolutions = [135, 134, 136, 197, 196, 470, 471];
+          idEvolution =
+            evolutions[Math.floor(Math.random() * evolutions.length)];
         }
       }
 
       // Gestion de l'évolution de chenipotte
       if (idEvolution === 266) {
         idEvolution = Math.random() < 0.5 ? 266 : 268;
-      }
-
-      // Gestion de l'évolution de coquiperl
-      if (idEvolution === 367) {
-        idEvolution = Math.random() < 0.5 ? 367 : 368;
-      }
-
-      // Gestion de l'évolution de Ningale
-      if (idEvolution === 291) {
-        idEvolution = Math.random() < 0.5 ? 291 : 292;
       }
 
       const pokemonTrainer = { idPokemon: idEvolution, idTrainer, isShiny };
