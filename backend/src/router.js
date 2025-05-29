@@ -1,6 +1,6 @@
 const express = require("express");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const models = require("./models");
 const StripeController = require("./controllers/StripeController");
 
@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.post(
   "/webhook",
-  bodyParser.raw({ type: "application/json" }),
+  express.raw({ type: "application/json" }),
   // eslint-disable-next-line consistent-return
   (req, res) => {
     const sig = req.headers["stripe-signature"];
