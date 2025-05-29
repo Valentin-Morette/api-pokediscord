@@ -1,9 +1,12 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+const webhookRouter = require("./router-webhook");
 const router = require("./router");
 
 const app = express();
+
+app.use("/webhook", webhookRouter);
 
 app.use(express.static(path.join(__dirname, "public")));
 

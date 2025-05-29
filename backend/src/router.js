@@ -1,7 +1,7 @@
 const express = require("express");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 // const bodyParser = require("body-parser");
-const models = require("./models");
+// const models = require("./models");
 const StripeController = require("./controllers/StripeController");
 
 const {
@@ -14,45 +14,6 @@ const {
 } = require("./controllers");
 
 const router = express.Router();
-
-router.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  // eslint-disable-next-line consistent-return
-  (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    let event;
-    console.error("Received webhook event:");
-
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
-    } catch (err) {
-      console.error("❌ Webhook Error:", err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    if (event.type === "checkout.session.completed") {
-      console.error("Checkout session completed:");
-      const discordId = event.data.object.metadata.discord_id;
-      const { email } = event.data.object.customer_details;
-      models.trainer
-        .addPremium(discordId, email)
-        .then(() => {
-          return res.status(200).send({ status: "success" });
-        })
-        .catch((err) => {
-          console.error(err);
-          return res.sendStatus(500);
-        });
-    }
-
-    res.status(200).send({ received: true });
-  }
-);
 
 router.get("/pokeball", PokeballController.browse);
 router.get("/pokeball/:id", PokeballController.read);
@@ -96,5 +57,44 @@ router.post(
   "/payment/create-checkout-session",
   StripeController.createCheckoutSession
 );
+
+// router.post(
+//   "/webhook",
+//   bodyParser.raw({ type: "application/json" }),
+//   // eslint-disable-next-line consistent-return
+//   (req, res) => {
+//     const sig = req.headers["stripe-signature"];
+//     let event;
+//     console.error("Received webhook event:");
+
+//     try {
+//       event = stripe.webhooks.constructEvent(
+//         req.body,
+//         sig,
+//         process.env.STRIPE_WEBHOOK_SECRET
+//       );
+//     } catch (err) {
+//       console.error("❌ Webhook Error:", err.message);
+//       return res.status(400).send(`Webhook Error: ${err.message}`);
+//     }
+
+//     if (event.type === "checkout.session.completed") {
+//       console.error("Checkout session completed:");
+//       const discordId = event.data.object.metadata.discord_id;
+//       const { email } = event.data.object.customer_details;
+//       models.trainer
+//         .addPremium(discordId, email)
+//         .then(() => {
+//           res.status(200).send({ status: "success" });
+//         })
+//         .catch((err) => {
+//           console.error(err);
+//           res.sendStatus(500);
+//         });
+//     }
+
+//     res.status(200).send({ received: true });
+//   }
+// );
 
 module.exports = router;
