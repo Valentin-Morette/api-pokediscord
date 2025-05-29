@@ -6,25 +6,44 @@ const myCache = new NodeCache({ stdTTL: 86400, checkperiod: 90000 });
 
 class PokemonController {
   static readByTrainer = (req, res) => {
-    const isShiny = req.params.type === "shiny" ? 1 : 0;
+    const isShiny =
+      req.params.type === "shiny" || req.params.type === "shiny-reverse";
+    const isReverse =
+      req.params.type === "shiny-reverse" ||
+      req.params.type === "regular-reverse";
     const generation = req.params.generation;
-    let countPokemon = 0;
-    let sumPokemon = 0;
-    models.pokemon_trainer
-      .countAndSumPokemonByTrainer(req.params.id, isShiny, generation)
-      .then(([result]) => {
-        countPokemon = result[0].count;
-        sumPokemon = parseInt(result[0].sum, 10);
-        models.pokemon
-          .findByTrainer(req.params.id, isShiny, generation)
-          .then(([rows]) => {
-            res.send({ countPokemon, sumPokemon, pokemon: rows });
-          })
-          .catch((err) => {
-            console.error(err);
-            res.sendStatus(500);
+    if (!isReverse) {
+      let countPokemon = 0;
+      let sumPokemon = 0;
+      models.pokemon_trainer
+        .countAndSumPokemonByTrainer(req.params.id, isShiny, generation)
+        .then(([result]) => {
+          countPokemon = result[0].count;
+          sumPokemon = parseInt(result[0].sum, 10);
+          models.pokemon
+            .findByTrainer(req.params.id, isShiny, generation)
+            .then(([rows]) => {
+              res.send({ countPokemon, sumPokemon, pokemon: rows });
+            })
+            .catch((err) => {
+              console.error(err);
+              res.sendStatus(500);
+            });
+        });
+    } else {
+      models.pokemon_trainer
+        .findMissingByTrainer(req.params.id, generation, isShiny)
+        .then(([rows]) => {
+          res.send({
+            countPokemon: rows.length,
+            pokemon: rows,
           });
-      });
+        })
+        .catch((err) => {
+          console.error(err);
+          res.sendStatus(500);
+        });
+    }
   };
 
   static import = (req, res) => {

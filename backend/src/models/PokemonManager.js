@@ -97,6 +97,23 @@ class PokemonManager extends AbstractManager {
     );
   }
 
+  findMissingByTrainer(idTrainer, generation = 1, isShiny = 0) {
+    return this.connection.query(
+      `SELECT p.*
+     FROM pokemon AS p
+     WHERE p.generation = ?
+     AND p.id NOT IN (
+       SELECT pt.idPokemon
+       FROM pokemon_trainer AS pt
+       WHERE pt.idTrainer = ?
+       AND pt.quantity > 0
+       AND pt.isShiny = ?
+     )
+     ORDER BY p.id ASC`,
+      [generation, idTrainer, isShiny]
+    );
+  }
+
   findByName(name) {
     return this.connection.query(
       `SELECT * FROM ${PokemonManager.table} WHERE name = ?`,

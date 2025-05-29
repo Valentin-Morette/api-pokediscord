@@ -9,7 +9,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // eslint-disable-next-line consistent-return
 const apiKeyMiddleware = (req, res, next) => {
-  const exemptPaths = ["/payment-success", "/payment-cancel"];
+  const exemptPaths = ["/payment-success", "/payment-cancel", "/webhook"];
 
   if (exemptPaths.includes(req.path)) {
     return next();
