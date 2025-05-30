@@ -109,6 +109,7 @@ class PokemonManager extends AbstractManager {
        AND pt.quantity > 0
        AND pt.isShiny = ?
      )
+    AND p.id != 9999
      ORDER BY p.id ASC`,
       [generation, idTrainer, isShiny]
     );
