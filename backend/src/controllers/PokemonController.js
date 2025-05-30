@@ -31,7 +31,7 @@ class PokemonController {
             });
         });
     } else {
-      models.pokemon_trainer
+      models.pokemon
         .findMissingByTrainer(req.params.id, generation, isShiny)
         .then(([rows]) => {
           res.send({
