@@ -202,10 +202,22 @@ class PokemonController {
 
   static ifIsShiny(shinyRate) {
     const randomNum = Math.floor(Math.random() * 1000);
-    if (randomNum <= shinyRate) {
+    const multiplier = this.shinyMultiplier();
+    if (randomNum <= shinyRate * multiplier) {
       return 1;
     }
     return 0;
+  }
+
+  // EVENT : SHINY WEEKEND
+  static shinyMultiplier() {
+    const startDate = new Date("2025-06-13T17:00:00Z");
+    const endDate = new Date("2025-06-15T23:59:59Z");
+    const currentDate = new Date();
+    if (currentDate >= startDate && currentDate <= endDate) {
+      return 2;
+    }
+    return 1;
   }
 
   static selectRandomPokemon(rows) {
@@ -525,7 +537,7 @@ class PokemonController {
       }
       res.status(201).send({
         status: "shiny",
-        shinyRate,
+        shinyRate: shinyRate * this.shinyMultiplier(),
         imgShiny: resultPokemon[0].imgShiny,
       });
     } catch (err) {
