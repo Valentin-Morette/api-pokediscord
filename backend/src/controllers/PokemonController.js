@@ -517,14 +517,8 @@ class PokemonController {
   };
 
   static shinyLuck = async (req, res) => {
-    const { idDiscord } = req.body;
     const { pokemonName } = req.body;
     try {
-      const [result] = await models.trainer.find(idDiscord);
-      if (result[0].isPremium === 0) {
-        res.status(201).send({ status: "noPremium" });
-        return;
-      }
       const [resultPokemon] = await models.pokemon.findByName(pokemonName);
       if (resultPokemon.length === 0) {
         res.status(201).send({ status: "noExistPokemon" });
@@ -539,6 +533,30 @@ class PokemonController {
         status: "shiny",
         shinyRate: shinyRate * this.shinyMultiplier(),
         imgShiny: resultPokemon[0].imgShiny,
+      });
+    } catch (err) {
+      console.error(err);
+      res.sendStatus(500);
+    }
+  };
+
+  static catchPokemonLuck = async (req, res) => {
+    const { pokemonName } = req.body;
+    try {
+      const [resultPokemon] = await models.pokemon.findByName(pokemonName);
+      if (resultPokemon.length === 0) {
+        res.status(201).send({ status: "noExistPokemon" });
+        return;
+      }
+      if (resultPokemon[0].escapeRate === 300) {
+        res.status(201).send({ status: "noCatchRate" });
+        return;
+      }
+      const [resultPokeball] = await models.pokeball.findAll();
+      res.status(201).send({
+        status: "catchLuck",
+        pokemonData: resultPokemon[0],
+        pokeballData: resultPokeball,
       });
     } catch (err) {
       console.error(err);

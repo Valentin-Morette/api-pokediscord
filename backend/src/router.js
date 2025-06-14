@@ -23,6 +23,7 @@ router.get(
 );
 router.post("/pokemon", PokemonController.import);
 router.post("/pokemon/catch", PokemonController.catchPokemon);
+router.post("/pokemon/catch-luck", PokemonController.catchPokemonLuck);
 router.post("/pokemon/evolve", PokemonController.evolvePokemon);
 router.post("/pokemon/info", PokemonController.infoPokemon);
 router.post("/pokemon/quantity", PokemonController.quantityPokemon);
