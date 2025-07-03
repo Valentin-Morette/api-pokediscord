@@ -10,10 +10,39 @@ class ZoneController {
         models.zone
           .findZoneByPokemonName(name)
           .then(([rows]) => {
+            const generationMap = {
+              1: "Kanto",
+              2: "Johto",
+              3: "Hoenn",
+              4: "Sinnoh",
+              5: "Unys",
+              6: "Kalos",
+              7: "Alola",
+              8: "Galar",
+              9: "Paldea",
+            };
+
+            const groupedZones = Object.values(
+              rows.reduce((acc, zone) => {
+                const gen = zone.generation;
+                if (!acc[gen]) {
+                  acc[gen] = {
+                    name: generationMap[gen] || `Génération ${gen}`,
+                    generation: gen,
+                    zones: [],
+                  };
+                }
+                acc[gen].zones.push(zone);
+                return acc;
+              }, {})
+            );
+
+            // Optionnel : trier par ordre croissant de génération
+            groupedZones.sort((a, b) => a.generation - b.generation);
             res.send({
               status: "zoneListed",
               pokemon: result[0],
-              result: rows,
+              result: groupedZones,
             });
           })
           .catch((err) => {

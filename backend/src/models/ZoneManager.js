@@ -14,6 +14,7 @@ class ZoneManager extends AbstractManager {
     return this.connection.query(
       `SELECT DISTINCT
         z.name,
+        z.generation,
         pz.spawnChance
       FROM
         ${ZoneManager.table} AS z
