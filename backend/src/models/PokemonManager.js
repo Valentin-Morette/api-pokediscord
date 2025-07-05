@@ -126,16 +126,11 @@ class PokemonManager extends AbstractManager {
   findRandomPokemon() {
     return this.connection.query(
       `SELECT * 
-        FROM ${PokemonManager.table} 
-        WHERE id >= (
-          SELECT FLOOR(MAX(id) * RAND()) 
-          FROM ${PokemonManager.table} 
-          WHERE id <= 386
-        ) 
-      AND id <= 493
-      AND id NOT IN (151, 251, 385, 489)
-      ORDER BY id 
-      LIMIT 1;`
+     FROM ${PokemonManager.table}
+     WHERE id BETWEEN 1 AND 493
+       AND id NOT IN (151, 251, 385, 489)
+     ORDER BY RAND()
+     LIMIT 1;`
     );
   }
 }
