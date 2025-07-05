@@ -74,10 +74,10 @@ class TrainerManager extends AbstractManager {
     );
   }
 
-  addPremium(idDiscord, email) {
+  addPremium(idDiscord) {
     return this.connection.query(
-      `update ${TrainerManager.table} set isPremium = 1, email = ? where idDiscord = ?`,
-      [email, idDiscord]
+      `update ${TrainerManager.table} set isPremium = 1 where idDiscord = ?`,
+      [idDiscord]
     );
   }
 
