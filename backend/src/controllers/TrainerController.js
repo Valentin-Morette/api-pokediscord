@@ -142,9 +142,9 @@ class TrainerController {
   };
 
   static addPremium = (req, res) => {
-    const { idDiscord, email } = req.body;
+    const { idDiscord } = req.body;
     models.trainer
-      .addPremium(idDiscord, email)
+      .addPremium(idDiscord)
       .then(() => {
         res.status(200).send({ status: "success" });
       })
@@ -276,17 +276,18 @@ class TrainerController {
             res.status(200).send({
               status: "alreadyGift",
               remainning: delay - (now - lastGift),
+              isPremium,
             });
             return;
           }
 
-          const moneyChance = 45;
-          const ballChance = 80;
+          const moneyChance = 20;
+          const ballChance = 40;
           const pokemonChance = 100;
           const random = Math.floor(Math.random() * 100);
 
           if (random < moneyChance) {
-            const amount = Math.floor(Math.random() * 40) * 100 + 1000;
+            const amount = Math.floor(Math.random() * 40) * 100 + 1000; // Between 1000 and 5000
             models.trainer
               .updateMoney(req.params.idDiscord, amount)
               .then(() => {

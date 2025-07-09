@@ -3,20 +3,23 @@ const mysql = require("mysql2/promise");
 const path = require("path");
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
+const DB_PORT = process.env.DB_PORT || 3306;
 
 const pool = mysql.createPool({
   host: DB_HOST,
   user: DB_USER,
-  password: DB_PASSWORD,
+  password: DB_PASSWORD ?? "",
   database: DB_NAME,
+  port: DB_PORT,
 });
 
-pool.getConnection().catch(() => {
+pool.getConnection().catch((err) => {
   console.warn(
     "Warning:",
     "Failed to get a DB connection.",
     "Did you create a .env file with valid credentials?",
-    "Routes using models won't work as intended"
+    "Routes using models won't work as intended",
+    err.message
   );
 });
 
