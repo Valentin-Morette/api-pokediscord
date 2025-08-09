@@ -1,0 +1,54 @@
+const models = require("../models");
+
+class BugsIdeasController {
+  static read = (req, res) => {
+    models.bugs_ideas
+      .findById(req.params.id)
+      .then(([rows]) => {
+        if (rows[0] == null) {
+          res.sendStatus(404);
+        } else {
+          res.send(rows[0]);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.sendStatus(500);
+      });
+  };
+
+  static insert = async (req, res) => {
+    const data = req.body;
+
+    try {
+      const [[last]] = await models.bugs_ideas.findLastByTrainer(
+        data.idTrainer,
+        data.type
+      );
+
+      if (last) {
+        const lastSent = new Date(last.createDate);
+        const now = new Date();
+        const diffInMinutes = (now - lastSent) / (1000 * 60);
+
+        if (diffInMinutes < 10) {
+          return res.status(201).send({ status: "alreadySent" });
+        }
+      }
+
+      const [rows] = await models.bugs_ideas.insert(data);
+
+      if (rows.affectedRows === 0) {
+        return res
+          .status(201)
+          .send({ status: "error", message: "Creation failed" });
+      }
+      return res.status(201).send({ status: "success", id: rows.insertId });
+    } catch (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
+  };
+}
+
+module.exports = BugsIdeasController;

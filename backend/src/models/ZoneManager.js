@@ -32,7 +32,7 @@ class ZoneManager extends AbstractManager {
 
   readByGeneration(generation) {
     return this.connection.query(
-      `SELECT name FROM ${ZoneManager.table} WHERE generation = ?`,
+      `SELECT name FROM ${ZoneManager.table} WHERE generation = ? ORDER BY id DESC`,
       [generation]
     );
   }

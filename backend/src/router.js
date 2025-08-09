@@ -8,9 +8,13 @@ const {
   TrainerController,
   RuneTrainerController,
   PokemonWildController,
+  BugsIdeasController,
+  ServersController,
 } = require("./controllers");
 
 const router = express.Router();
+
+router.post("/bugs-ideas", BugsIdeasController.insert);
 
 router.get("/pokeball", PokeballController.browse);
 router.get("/pokeball/:id", PokeballController.read);
@@ -45,6 +49,9 @@ router.delete("/trainer/:idDiscord", TrainerController.delete);
 router.get("/rune/:idDiscordTrainer", RuneTrainerController.readByTrainer);
 router.post("/rune/buy", RuneTrainerController.buy);
 router.post("/rune/use", PokemonController.useRune);
+
+router.post("/servers", ServersController.insert);
+router.put("/servers/:id", ServersController.update);
 
 router.get("/zone/pokemon/:name", ZoneController.findZoneByPokemonName);
 router.get("/zone/:generation", ZoneController.readByGeneration);
