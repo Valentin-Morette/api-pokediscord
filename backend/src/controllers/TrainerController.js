@@ -17,48 +17,114 @@ class TrainerController {
       });
   };
 
-  static add = (req, res) => {
-    const payload = req.body;
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let affiliateCode = "";
-    for (let i = 0; i < 8; i += 1) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      affiliateCode += characters[randomIndex];
-    }
-    payload.trainer.affiliateCode = affiliateCode;
+  static add = async (req, res) => {
+    try {
+      const { trainer, ball = [] } = req.body;
 
-    models.trainer
-      .insert(payload.trainer)
-      .then(([result]) => {
-        for (const pokeball of payload.ball) {
-          models.pokeball_trainer.insert(
-            pokeball.id,
-            payload.trainer.idDiscord,
-            pokeball.quantity
-          );
-        }
-        res.status(201).send({ trainer: payload.trainer, id: result.insertId });
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
-      });
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let affiliateCode = "";
+      for (let i = 0; i < 8; i += 1)
+        affiliateCode += chars[Math.floor(Math.random() * chars.length)];
+
+      trainer.affiliateCode = affiliateCode;
+
+      const [result] = await models.trainer.upsert(trainer);
+
+      const created = result.affectedRows === 1;
+
+      if (created && ball.length) {
+        await Promise.all(
+          ball.map((b) =>
+            models.pokeball_trainer.insert(b.id, trainer.idDiscord, b.quantity)
+          )
+        );
+        return res.status(201).send({ trainer, created: true });
+      }
+
+      return res
+        .status(200)
+        .send({ message: "Trainer already exists", created: false });
+    } catch (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
   };
 
-  static verifyIdDiscord = (req, res) => {
-    models.trainer
-      .verifyIdDiscord(req.params.idDiscord)
-      .then(([rows]) => {
-        if (rows[0] == null) {
-          res.status(200).send({ hasAccount: false });
-        } else {
-          res.status(200).send({ hasAccount: true });
+  static bulkAdd = async (req, res) => {
+    const { trainers = [], money, ball = [] } = req.body;
+    if (!Array.isArray(trainers) || trainers.length === 0) {
+      return res.status(400).send({ error: "trainers array is required" });
+    }
+    if (typeof money !== "number") {
+      return res.status(400).send({ error: "money must be a number" });
+    }
+
+    const map = new Map();
+    for (const t of trainers) {
+      if (t?.idDiscord && t?.name) map.set(t.idDiscord, t);
+    }
+    const list = Array.from(map.values());
+    const ids = list.map((t) => t.idDiscord);
+
+    const conn = models.trainer.connection;
+    const genCode = () => {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let s = "";
+      for (let i = 0; i < 8; i += 1)
+        s += chars[Math.floor(Math.random() * chars.length)];
+      return s;
+    };
+
+    try {
+      const [existingBefore] = await conn.query(
+        `SELECT idDiscord FROM trainer WHERE idDiscord IN (?)`,
+        [ids]
+      );
+      const existed = new Set(existingBefore.map((r) => r.idDiscord));
+
+      const values = list.map((t) => [
+        t.idDiscord,
+        t.name,
+        money,
+        genCode(),
+        t.firstServerId ?? null,
+      ]);
+
+      await conn.query(
+        `INSERT INTO trainer (idDiscord, name, money, affiliateCode, firstServerId)
+       VALUES ?
+       ON DUPLICATE KEY UPDATE
+         name = VALUES(name),
+         firstServerId = COALESCE(firstServerId, VALUES(firstServerId))`,
+        [values]
+      );
+
+      const newIds = list
+        .map((t) => t.idDiscord)
+        .filter((id) => !existed.has(id));
+
+      if (newIds.length && ball.length) {
+        const ballValues = [];
+        for (const id of newIds) {
+          for (const b of ball) {
+            ballValues.push([b.id, id, b.quantity]);
+          }
         }
-      })
-      .catch((err) => {
-        console.error(err);
-        res.sendStatus(500);
+        await models.pokeball_trainer.connection.query(
+          `INSERT INTO pokeball_trainer (idPokeball, idTrainer, quantity) VALUES ?`,
+          [ballValues]
+        );
+      }
+
+      return res.status(200).send({
+        total: list.length,
+        created: newIds.length,
+        skipped: list.length - newIds.length,
       });
+    } catch (err) {
+      console.error(err);
+      return res.sendStatus(500);
+    }
   };
 
   static swapForTrade = (trade, payload, accept = true) => {

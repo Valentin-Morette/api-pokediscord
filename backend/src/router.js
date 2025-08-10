@@ -39,9 +39,9 @@ router.delete("/pokemon/wild", PokemonController.deletePokemonWild);
 
 router.get("/trainer/:idDiscord", TrainerController.read);
 router.get("/trainer/gift/:idDiscord", TrainerController.gift);
-router.get("/trainer/verify/:idDiscord", TrainerController.verifyIdDiscord);
 router.post("/trainer", TrainerController.add);
 router.post("/trainer/affiliate", TrainerController.affiliate);
+router.post("/trainer/bulk", TrainerController.bulkAdd);
 router.post("/trainer/pokemon/trade", TrainerController.tradePokemon);
 router.post("/trainer/premium", TrainerController.addPremium);
 router.delete("/trainer/:idDiscord", TrainerController.delete);

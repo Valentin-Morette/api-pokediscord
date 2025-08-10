@@ -3,15 +3,20 @@ const AbstractManager = require("./AbstractManager");
 class TrainerManager extends AbstractManager {
   static table = "trainer";
 
-  insert(trainer) {
+  upsert(trainer) {
     return this.connection.query(
-      `insert into ${TrainerManager.table} (id,idDiscord, name, money, affiliateCode) values (?, ?, ?, ?, ?)`,
+      `INSERT INTO ${TrainerManager.table}
+        (idDiscord, name, money, affiliateCode, firstServerId)
+       VALUES (?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         name = VALUES(name),
+         firstServerId = COALESCE(firstServerId, VALUES(firstServerId))`,
       [
-        trainer.id,
         trainer.idDiscord,
         trainer.name,
         trainer.money,
         trainer.affiliateCode,
+        trainer.firstServerId,
       ]
     );
   }
@@ -27,13 +32,6 @@ class TrainerManager extends AbstractManager {
     return this.connection.query(
       `update ${TrainerManager.table} set lastGift = now() where idDiscord = ?`,
       [id]
-    );
-  }
-
-  verifyIdDiscord(idDiscord) {
-    return this.connection.query(
-      `select * from ${TrainerManager.table} where idDiscord = ?`,
-      [idDiscord]
     );
   }
 

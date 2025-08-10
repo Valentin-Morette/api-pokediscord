@@ -9,9 +9,7 @@ class ServersManager extends AbstractManager {
      VALUES (?, ?, ?)
      ON DUPLICATE KEY UPDATE
        name = VALUES(name),
-       idOwner = VALUES(idOwner),
-       isInstal = 0
-       isDelete = 0`,
+       idOwner = VALUES(idOwner)`,
       [servers.idServer, servers.name, servers.idOwner]
     );
   }
