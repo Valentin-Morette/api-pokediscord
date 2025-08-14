@@ -23,10 +23,10 @@ router.post(
     }
 
     const ballDataPackage = {
-      pokeball: { id: 1, quantity: 1000, name: "Pokeball" },
-      superball: { id: 2, quantity: 1000, name: "Superball" },
-      hyperball: { id: 3, quantity: 1000, name: "Hyperball" },
-      masterball: { id: 4, quantity: 10, name: "Masterball" },
+      pokeball: { id: 1, quantity: 1000, name: "pokeball" },
+      superball: { id: 2, quantity: 1000, name: "superball" },
+      hyperball: { id: 3, quantity: 1000, name: "hyperball" },
+      masterball: { id: 4, quantity: 10, name: "masterball" },
     };
 
     const productIdArray = {
@@ -53,10 +53,11 @@ router.post(
       });
 
       const discordId = event.data.object.metadata.discord_id;
+      const serverId = event.data.object.metadata.server_id;
       let { name } = event.data.object.metadata;
       name = name ? name.toLowerCase().trim() : null;
       const productId = productIdArray[name] || null;
-      if (name && name === "Premium") {
+      if (name && name === "premium") {
         try {
           await models.trainer.addPremium(discordId);
         } catch (err) {
@@ -82,6 +83,7 @@ router.post(
           stripe_session_id: event.data.object.id,
           stripe_payment_intent: event.data.object.payment_intent,
           discord_id: discordId,
+          server_id: serverId,
           email: event.data.object.customer_details.email,
           product_id: productId,
           amount_total: event.data.object.amount_total,
