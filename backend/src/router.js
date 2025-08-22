@@ -60,6 +60,7 @@ router.get("/zone/:generation", ZoneController.readByGeneration);
 router.get("/recap", PokemonWildController.recap);
 
 router.get("/dashboard/stats", DashboardController.getStats);
+router.get("/dashboard/servers", DashboardController.getServers);
 
 router.post(
   "/payment/create-checkout-session",
