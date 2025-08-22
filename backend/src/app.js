@@ -35,8 +35,13 @@ const apiKeyMiddleware = (req, res, next) => {
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL ?? "http://localhost:3000",
+    origin: [
+      process.env.FRONTEND_URL ?? "http://localhost:3000",
+      "http://localhost:5173", // Frontend Vite/React
+      "http://localhost:3001", // Autres ports possibles
+    ],
     optionsSuccessStatus: 200,
+    credentials: true, // Permet l'envoi de cookies si nécessaire
   })
 );
 

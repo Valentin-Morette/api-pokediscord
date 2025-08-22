@@ -10,6 +10,7 @@ const {
   PokemonWildController,
   BugsIdeasController,
   ServersController,
+  DashboardController,
 } = require("./controllers");
 
 const router = express.Router();
@@ -57,6 +58,8 @@ router.get("/zone/pokemon/:name", ZoneController.findZoneByPokemonName);
 router.get("/zone/:generation", ZoneController.readByGeneration);
 
 router.get("/recap", PokemonWildController.recap);
+
+router.get("/dashboard/stats", DashboardController.getStats);
 
 router.post(
   "/payment/create-checkout-session",
