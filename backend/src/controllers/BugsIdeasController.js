@@ -61,6 +61,17 @@ class BugsIdeasController {
       const { id } = req.params;
       const { status } = req.body;
 
+      // DEBUG: Voir exactement ce qui arrive
+      console.warn("=== DEBUG UPDATE BUGS-IDEAS ===");
+      console.warn("req.params:", req.params);
+      console.warn("req.body:", req.body);
+      console.warn("req.body.status:", req.body.status);
+      console.warn("typeof req.body.status:", typeof req.body.status);
+      console.warn("status === null:", status === null);
+      console.warn("status === undefined:", status === undefined);
+      console.warn("status === '':", status === "");
+      console.warn("==================================");
+
       // Validation du status
       if (status === null || status === undefined || status === "") {
         return res.status(400).json({
