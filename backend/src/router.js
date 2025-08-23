@@ -61,6 +61,7 @@ router.get("/recap", PokemonWildController.recap);
 
 router.get("/dashboard/stats", DashboardController.getStats);
 router.get("/dashboard/servers", DashboardController.getServers);
+router.get("/dashboard/bugs-ideas", DashboardController.getBugsIdeas);
 
 router.post(
   "/payment/create-checkout-session",

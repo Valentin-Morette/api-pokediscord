@@ -34,6 +34,20 @@ class DashboardController {
       });
     }
   };
+
+  static getBugsIdeas = async (req, res) => {
+    try {
+      const [bugsIdeas] = await models.dashboard.getBugsIdeas();
+      res.json(bugsIdeas);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des bugs et idées:", error);
+
+      res.status(500).json({
+        status: "error",
+        message: "Erreur lors de la récupération des bugs et idées",
+      });
+    }
+  };
 }
 
 module.exports = DashboardController;

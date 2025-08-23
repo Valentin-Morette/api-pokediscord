@@ -28,6 +28,17 @@ class DashboardManager extends AbstractManager {
     `;
     return this.connection.query(query);
   }
+
+  async getBugsIdeas() {
+    const query = `
+      SELECT 
+        bugs_ideas.*,
+        trainer.name AS trainerName
+      FROM bugs_ideas
+      INNER JOIN trainer ON bugs_ideas.idTrainer = trainer.idDiscord;
+    `;
+    return this.connection.query(query);
+  }
 }
 
 module.exports = DashboardManager;
