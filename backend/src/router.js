@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.post("/bugs-ideas", BugsIdeasController.insert);
 router.delete("/bugs-ideas/:id", BugsIdeasController.delete);
-router.put("/bugs-ideas/:id", BugsIdeasController.update);
+router.post("/bugs-ideas/:id", BugsIdeasController.update);
 
 router.get("/pokeball", PokeballController.browse);
 router.get("/pokeball/:id", PokeballController.read);
