@@ -16,8 +16,9 @@ const {
 const router = express.Router();
 
 router.post("/bugs-ideas", BugsIdeasController.insert);
+router.post("/bugs-ideas/:id", BugsIdeasController.update); // POST avec paramètre pour compatibilité
 router.delete("/bugs-ideas/:id", BugsIdeasController.delete);
-router.post("/bugs-ideas/:id", BugsIdeasController.update);
+router.put("/bugs-ideas/:id", BugsIdeasController.update);
 
 router.get("/pokeball", PokeballController.browse);
 router.get("/pokeball/:id", PokeballController.read);
