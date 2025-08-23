@@ -17,6 +17,7 @@ const router = express.Router();
 
 router.post("/bugs-ideas", BugsIdeasController.insert);
 router.post("/bugs-ideas/:id", BugsIdeasController.update); // POST avec paramètre pour compatibilité
+router.post("/bugs-ideas-update", BugsIdeasController.updateById); // Route temporaire sans paramètre
 router.delete("/bugs-ideas/:id", BugsIdeasController.delete);
 router.put("/bugs-ideas/:id", BugsIdeasController.update);
 
