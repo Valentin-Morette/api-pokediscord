@@ -49,6 +49,19 @@ class BugsIdeasController {
       return res.sendStatus(500);
     }
   };
+
+  static delete = async (req, res) => {
+    const { id } = req.params;
+    await models.bugs_ideas.delete(id);
+    res.json({ status: "success" });
+  };
+
+  static update = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    await models.bugs_ideas.update(id, status);
+    res.json({ status: "success" });
+  };
 }
 
 module.exports = BugsIdeasController;

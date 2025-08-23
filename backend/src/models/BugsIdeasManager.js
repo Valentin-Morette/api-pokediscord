@@ -26,6 +26,20 @@ class BugsIdeasManager extends AbstractManager {
       [bugsIdeas.type, bugsIdeas.idTrainer, bugsIdeas.message]
     );
   }
+
+  delete(id) {
+    return this.connection.query(
+      `DELETE FROM ${BugsIdeasManager.table} WHERE id = ?`,
+      [id]
+    );
+  }
+
+  update(id, status) {
+    return this.connection.query(
+      `UPDATE ${BugsIdeasManager.table} SET status = ? WHERE id = ?`,
+      [status, id]
+    );
+  }
 }
 
 module.exports = BugsIdeasManager;
