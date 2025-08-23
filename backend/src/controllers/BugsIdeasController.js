@@ -57,10 +57,27 @@ class BugsIdeasController {
   };
 
   static update = async (req, res) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    await models.bugs_ideas.update(id, status);
-    res.json({ status: "success" });
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      // Validation du status
+      if (status === null || status === undefined || status === "") {
+        return res.status(400).json({
+          status: "error",
+          message: "Le status ne peut pas être vide ou null",
+        });
+      }
+
+      await models.bugs_ideas.update(id, status);
+      return res.json({ status: "success" });
+    } catch (error) {
+      console.error("Erreur lors de l'update:", error);
+      return res.status(500).json({
+        status: "error",
+        message: "Erreur lors de la mise à jour",
+      });
+    }
   };
 }
 
