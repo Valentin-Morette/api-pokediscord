@@ -16,8 +16,6 @@ const {
 const router = express.Router();
 
 router.post("/bugs-ideas", BugsIdeasController.insert);
-router.post("/bugs-ideas/:id", BugsIdeasController.update); // POST avec paramètre pour compatibilité
-router.post("/bugs-ideas-update", BugsIdeasController.updateById); // Route temporaire sans paramètre
 router.delete("/bugs-ideas/:id", BugsIdeasController.delete);
 router.put("/bugs-ideas/:id", BugsIdeasController.update);
 
@@ -66,6 +64,7 @@ router.get("/recap", PokemonWildController.recap);
 router.get("/dashboard/stats", DashboardController.getStats);
 router.get("/dashboard/servers", DashboardController.getServers);
 router.get("/dashboard/bugs-ideas", DashboardController.getBugsIdeas);
+router.get("/dashboard/sales", DashboardController.getSales);
 
 router.post(
   "/payment/create-checkout-session",

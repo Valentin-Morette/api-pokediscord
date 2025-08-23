@@ -48,6 +48,11 @@ class DashboardController {
       });
     }
   };
+
+  static getSales = async (req, res) => {
+    const [sales] = await models.dashboard.getSales();
+    res.json(sales);
+  };
 }
 
 module.exports = DashboardController;

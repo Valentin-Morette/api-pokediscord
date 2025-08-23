@@ -61,18 +61,6 @@ class BugsIdeasController {
       const { id } = req.params;
       const { status } = req.body;
 
-      // DEBUG: Voir exactement ce qui arrive
-      console.warn("=== DEBUG UPDATE BUGS-IDEAS ===");
-      console.warn("req.params:", req.params);
-      console.warn("req.body:", req.body);
-      console.warn("req.body.status:", req.body.status);
-      console.warn("typeof req.body.status:", typeof req.body.status);
-      console.warn("status === null:", status === null);
-      console.warn("status === undefined:", status === undefined);
-      console.warn("status === '':", status === "");
-      console.warn("==================================");
-
-      // Validation du status
       if (status === null || status === undefined || status === "") {
         return res.status(400).json({
           status: "error",
@@ -84,36 +72,6 @@ class BugsIdeasController {
       return res.json({ status: "success" });
     } catch (error) {
       console.error("Erreur lors de l'update:", error);
-      return res.status(500).json({
-        status: "error",
-        message: "Erreur lors de la mise à jour",
-      });
-    }
-  };
-
-  static updateById = async (req, res) => {
-    try {
-      const { id, status } = req.body;
-
-      // DEBUG: Voir exactement ce qui arrive
-      console.warn("=== DEBUG UPDATE BY ID BUGS-IDEAS ===");
-      console.warn("req.body:", req.body);
-      console.warn("id:", id);
-      console.warn("status:", status);
-      console.warn("=====================================");
-
-      // Validation
-      if (!id || !status) {
-        return res.status(400).json({
-          status: "error",
-          message: "L'id et le status sont requis",
-        });
-      }
-
-      await models.bugs_ideas.update(id, status);
-      return res.json({ status: "success" });
-    } catch (error) {
-      console.error("Erreur lors de l'update by id:", error);
       return res.status(500).json({
         status: "error",
         message: "Erreur lors de la mise à jour",

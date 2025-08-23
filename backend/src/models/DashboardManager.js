@@ -39,6 +39,18 @@ class DashboardManager extends AbstractManager {
     `;
     return this.connection.query(query);
   }
+
+  async getSales() {
+    return this.connection.query(
+      `SELECT 
+        sale.id, sale.discord_id, sale.server_id, sale.product_id, sale.amount_total, sale.quantity, sale.currency, sale.created_at,
+        trainer.name AS trainerName,
+        servers.name AS serverName
+      FROM sale
+      INNER JOIN trainer ON sale.discord_id = trainer.idDiscord
+      INNER JOIN servers ON sale.server_id = servers.idServer`
+    );
+  }
 }
 
 module.exports = DashboardManager;
