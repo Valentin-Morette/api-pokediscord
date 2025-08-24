@@ -49,6 +49,37 @@ class DashboardController {
     }
   };
 
+  static getTrainers = async (req, res) => {
+    try {
+      const [trainers] = await models.dashboard.getTrainers();
+
+      // Traitement des pokeballs et pokemonStats pour gérer les NULL
+      const processedTrainers = trainers.map(trainer => ({
+        ...trainer,
+        pokeballs: trainer.pokeballs[0] === null ? [] : trainer.pokeballs,
+        pokemonStats: trainer.pokemonStats || {
+          sumTotal: 0,
+          sumShiny: 0,
+          sumNoShiny: 0,
+          countShiny: 0,
+          countNoShiny: 0
+        }
+      }));
+
+      res.json({
+        status: "success",
+        trainers: processedTrainers,
+        count: processedTrainers.length
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des trainers:", error);
+      res.status(500).json({
+        status: "error",
+        message: "Erreur lors de la récupération des trainers",
+      });
+    }
+  };
+
   static getSales = async (req, res) => {
     const [sales] = await models.dashboard.getSales();
     res.json(sales);

@@ -65,6 +65,7 @@ router.get("/dashboard/stats", DashboardController.getStats);
 router.get("/dashboard/servers", DashboardController.getServers);
 router.get("/dashboard/bugs-ideas", DashboardController.getBugsIdeas);
 router.get("/dashboard/sales", DashboardController.getSales);
+router.get("/dashboard/trainers", DashboardController.getTrainers);
 
 router.post(
   "/payment/create-checkout-session",
