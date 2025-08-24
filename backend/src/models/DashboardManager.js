@@ -62,31 +62,38 @@ class DashboardManager extends AbstractManager {
         t.isPremium, 
         t.idDiscord, 
         t.firstServerId,
-        s.name AS serverName,
-        JSON_ARRAYAGG(
-          JSON_OBJECT(
-            'id', pt.idPokeball,
-            'name', p.name,
-            'quantity', pt.quantity
-          )
-        ) AS pokeballs,
-        (
-          SELECT JSON_OBJECT(
-            'sumTotal', SUM(pt_pokemon.quantity),
-            'sumShiny', SUM(CASE WHEN pt_pokemon.isShiny = 1 THEN pt_pokemon.quantity ELSE 0 END),
-            'sumNoShiny', SUM(CASE WHEN pt_pokemon.isShiny = 0 THEN pt_pokemon.quantity ELSE 0 END),
-            'countShiny', SUM(CASE WHEN pt_pokemon.isShiny = 1 THEN 1 ELSE 0 END),
-            'countNoShiny', SUM(CASE WHEN pt_pokemon.isShiny = 0 THEN 1 ELSE 0 END)
-          )
-          FROM pokemon_trainer pt_pokemon 
-          WHERE pt_pokemon.idTrainer = t.idDiscord
-        ) AS pokemonStats
+        s.name AS serverName
       FROM trainer t
       LEFT JOIN servers s ON t.firstServerId = s.idServer
-      LEFT JOIN pokeball_trainer pt ON t.idDiscord = pt.idTrainer
-      LEFT JOIN pokeball p ON pt.idPokeball = p.id
-      GROUP BY t.id, t.name, t.money, t.startDate, t.isPremium, t.idDiscord, t.firstServerId, s.name
       ORDER BY t.name ASC`
+    );
+  }
+
+  async getTrainerPokeballs(trainerId) {
+    return this.connection.query(
+      `SELECT 
+        pt.idPokeball,
+        p.name,
+        pt.quantity
+      FROM pokeball_trainer pt
+      INNER JOIN pokeball p ON pt.idPokeball = p.id
+      WHERE pt.idTrainer = ?
+      ORDER BY p.name ASC`,
+      [trainerId]
+    );
+  }
+
+  async getTrainerPokemonStats(trainerId) {
+    return this.connection.query(
+      `SELECT 
+        SUM(pt.quantity) as sumTotal,
+        SUM(CASE WHEN pt.isShiny = 1 THEN pt.quantity ELSE 0 END) as sumShiny,
+        SUM(CASE WHEN pt.isShiny = 0 THEN pt.quantity ELSE 0 END) as sumNoShiny,
+        SUM(CASE WHEN pt.isShiny = 1 THEN 1 ELSE 0 END) as countShiny,
+        SUM(CASE WHEN pt.isShiny = 0 THEN 1 ELSE 0 END) as countNoShiny
+      FROM pokemon_trainer pt
+      WHERE pt.idTrainer = ?`,
+      [trainerId]
     );
   }
 }
