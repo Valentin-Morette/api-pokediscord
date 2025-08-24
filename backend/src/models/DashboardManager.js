@@ -8,7 +8,8 @@ class DashboardManager extends AbstractManager {
       SELECT 
         (SELECT COUNT(*) FROM servers) as serverCount,
         (SELECT COUNT(*) FROM sale) as saleCount,
-        (SELECT COUNT(*) FROM trainer) as trainerCount
+        (SELECT COUNT(*) FROM trainer) as trainerCount,
+        (SELECT COUNT(*) FROM pokemon_wild WHERE idServer IS NOT NULL) as pokemonWildCount
     `;
     return this.connection.query(query);
   }
