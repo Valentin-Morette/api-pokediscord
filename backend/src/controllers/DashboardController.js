@@ -95,7 +95,25 @@ class DashboardController {
 
   static getPokemonWild = async (req, res) => {
     const [pokemonWild] = await models.dashboard.getPokemonWild();
-    res.json(pokemonWild);
+    const count = pokemonWild.length;
+    const countShiny = pokemonWild.filter((pokemon) => pokemon.isShiny).length;
+    const countNoShiny = pokemonWild.filter((pokemon) => !pokemon.isShiny).length;
+    const countEscape = pokemonWild.filter((pokemon) => pokemon.isEscape).length;
+    const countCatch = pokemonWild.filter((pokemon) => pokemon.isCatch).length;
+    const countNoCatchNoEscape = count - countCatch - countEscape;
+
+    res.json({
+      status: "success",
+      data: {
+        count,
+        countShiny,
+        countNoShiny,
+        countEscape,
+        countCatch,
+        countNoCatchNoEscape,
+        pokemonWild,
+      },
+    });
   };
 }
 
