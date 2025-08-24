@@ -77,7 +77,7 @@ class PokemonController {
     pokemonListClean.forEach((pokemon) => {
       models.pokemon
         .insert(pokemon)
-        .then(() => {})
+        .then(() => { })
         .catch((err) => {
           console.error(err);
           res.sendStatus(500);
@@ -104,6 +104,7 @@ class PokemonController {
   static addPokemonWild = async (req, res) => {
     const zone = req.body.nameZone;
     const pokemonName = req.body.namePokemon;
+    const idServer = req.body.idServer;
 
     try {
       let pokemonData;
@@ -156,7 +157,11 @@ class PokemonController {
       if (pokemonData.shinyRate !== null) {
         isShiny = this.ifIsShiny(pokemonData.shinyRate);
       }
-      const pokemonWild = this.createPokemonWildObject(pokemonData, isShiny);
+      const pokemonWild = this.createPokemonWildObject(
+        pokemonData,
+        idServer,
+        isShiny
+      );
       const [resultInsert] = await models.pokemon_wild.insert(pokemonWild);
       res.status(201).send({
         idPokemonWild: resultInsert.insertId,
@@ -234,13 +239,14 @@ class PokemonController {
     return rows[0];
   }
 
-  static createPokemonWildObject(pokemonData, isShiny = 0) {
+  static createPokemonWildObject(pokemonData, idServer, isShiny = 0) {
     return {
       idPokemon: pokemonData.id,
       isShiny,
       isCatch: 0,
       isEscape: 0,
       dateAppear: new Date(),
+      idServer,
     };
   }
 
