@@ -92,6 +92,11 @@ class DashboardController {
     const [sales] = await models.dashboard.getSales();
     res.json(sales);
   };
+
+  static getPokemonWild = async (req, res) => {
+    const [pokemonWild] = await models.dashboard.getPokemonWild();
+    res.json(pokemonWild);
+  };
 }
 
 module.exports = DashboardController;

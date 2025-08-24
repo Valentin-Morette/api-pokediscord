@@ -97,6 +97,16 @@ class DashboardManager extends AbstractManager {
       [trainerId]
     );
   }
+
+  async getPokemonWild() {
+    return this.connection.query(
+      `SELECT pw.id, pw.idPokemon, pw.dateAppear, pw.isShiny, pw.isEscape, pw.isCatch, pw.idServer, p.name AS pokemonName, s.name AS serverName
+      FROM pokemon_wild pw
+      INNER JOIN pokemon p ON pw.idPokemon = p.id
+      INNER JOIN servers s ON pw.idServer = s.idServer
+      WHERE pw.idServer IS NOT NULL`
+    );
+  }
 }
 
 module.exports = DashboardManager;
