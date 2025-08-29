@@ -11,6 +11,7 @@ const {
   BugsIdeasController,
   ServersController,
   DashboardController,
+  LogController,
 } = require("./controllers");
 
 const router = express.Router();
@@ -72,5 +73,13 @@ router.post(
   "/payment/create-checkout-session",
   StripeController.createCheckoutSession
 );
+
+// Routes pour les logs
+router.post("/logs", LogController.createLog);
+router.get("/logs", LogController.getAllLogs);
+router.get("/logs/server/:idServer", LogController.getLogsByServer);
+router.get("/logs/discord/:idDiscord", LogController.getLogsByDiscord);
+router.get("/logs/type/:type", LogController.getLogsByType);
+router.get("/logs/category/:category", LogController.getLogsByCategory);
 
 module.exports = router;
