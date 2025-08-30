@@ -12,6 +12,7 @@ const {
   ServersController,
   DashboardController,
   LogController,
+  TopggController,
 } = require("./controllers");
 
 const router = express.Router();
@@ -54,6 +55,7 @@ router.get("/rune/:idDiscordTrainer", RuneTrainerController.readByTrainer);
 router.post("/rune/buy", RuneTrainerController.buy);
 router.post("/rune/use", PokemonController.useRune);
 
+router.get("/servers/uninstal", ServersController.getUninstal);
 router.post("/servers", ServersController.insert);
 router.put("/servers/:id", ServersController.update);
 
@@ -81,5 +83,8 @@ router.get("/logs/server/:idServer", LogController.getLogsByServer);
 router.get("/logs/discord/:idDiscord", LogController.getLogsByDiscord);
 router.get("/logs/type/:type", LogController.getLogsByType);
 router.get("/logs/category/:category", LogController.getLogsByCategory);
+
+// Webhook Top.gg (séparé de l'API_KEY)
+router.post("/webhook/topgg", TopggController.voteWebhook);
 
 module.exports = router;

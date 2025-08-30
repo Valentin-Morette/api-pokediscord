@@ -1,6 +1,11 @@
 const models = require("../models");
 
 class ServersController {
+  static getUninstal = async (req, res) => {
+    const [servers] = await models.servers.findAllUninstal();
+    res.status(200).send(servers);
+  };
+
   static insert = async (req, res) => {
     const data = req.body;
     try {

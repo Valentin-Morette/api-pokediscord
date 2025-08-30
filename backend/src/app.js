@@ -16,6 +16,7 @@ const apiKeyMiddleware = (req, res, next) => {
     "/payment-success",
     "/payment-cancel",
     "/webhook",
+    "/webhook/topgg",
     "/phpmyadmin",
   ];
 
