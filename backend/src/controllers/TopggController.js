@@ -54,6 +54,11 @@ class TopggController {
       const authHeader = req.headers.authorization;
       const expectedToken = process.env.TOKEN_TOPGG;
 
+      console.warn("🔑 Token reçu:", authHeader);
+      console.warn("🔑 Token attendu:", expectedToken);
+      console.warn("body:", JSON.stringify(req.body, null, 2));
+      console.warn("headers:", JSON.stringify(req.headers, null, 2));
+
       if (!authHeader || authHeader !== expectedToken) {
         return res.status(401).json({
           status: "error",
