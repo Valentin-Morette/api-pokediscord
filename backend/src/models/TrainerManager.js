@@ -85,6 +85,20 @@ class TrainerManager extends AbstractManager {
       [idDiscord]
     );
   }
+
+  updateStreak(idDiscord, streak) {
+    return this.connection.query(
+      `update ${TrainerManager.table} set streak = ? where idDiscord = ?`,
+      [streak, idDiscord]
+    );
+  }
+
+  addStreakPremium(idDiscord) {
+    return this.connection.query(
+      `update ${TrainerManager.table} set isStreakPremium = 1 where idDiscord = ? and isStreakPremium = 0`,
+      [idDiscord]
+    );
+  }
 }
 
 module.exports = TrainerManager;

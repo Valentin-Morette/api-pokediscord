@@ -84,7 +84,7 @@ router.get("/logs/discord/:idDiscord", LogController.getLogsByDiscord);
 router.get("/logs/type/:type", LogController.getLogsByType);
 router.get("/logs/category/:category", LogController.getLogsByCategory);
 
-// Webhook Top.gg (séparé de l'API_KEY)
-router.post("/webhook/topgg", TopggController.voteWebhook);
+// Route pour reset des streaks
+router.post("/topgg/reset-streaks", TopggController.resetStreaks);
 
 module.exports = router;

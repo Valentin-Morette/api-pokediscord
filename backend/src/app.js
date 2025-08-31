@@ -2,11 +2,13 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const webhookRouter = require("./router-webhook");
+const topggRouter = require("./router-topgg");
 const router = require("./router");
 
 const app = express();
 
 app.use("/webhook", express.raw({ type: "application/json" }), webhookRouter);
+app.use("/topgg", express.json(), topggRouter);
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -16,7 +18,7 @@ const apiKeyMiddleware = (req, res, next) => {
     "/payment-success",
     "/payment-cancel",
     "/webhook",
-    "/webhook/topgg",
+    "/topgg",
     "/phpmyadmin",
   ];
 
