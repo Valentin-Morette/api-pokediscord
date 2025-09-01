@@ -9,7 +9,8 @@ class TopggController {
 
       // Récupérer seulement les trainers avec streak > 0
       const [trainers] = await models.trainer.connection.query(
-        `SELECT * FROM trainer WHERE streak > 0`
+        `SELECT * FROM trainer WHERE streak > 0`,
+        [yesterday]
       );
       let resetCount = 0;
 
@@ -48,16 +49,33 @@ class TopggController {
     }
   };
 
+  static getStreaks = async (req, res) => {
+    try {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      const [streaks] = await models.trainer.connection.query(
+        `SELECT idDiscord, name, streak FROM trainer WHERE streak > 0 AND idDiscord NOT IN (SELECT idDiscord FROM vote_topgg WHERE date > ?)`,
+        [yesterday]
+      );
+      return res.status(200).json({
+        status: "success",
+        message: "Streaks récupérées avec succès",
+        streaks
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: "error",
+        message: "Erreur lors de la récupération des streaks"
+      });
+    }
+  };
+
   static voteWebhook = async (req, res) => {
     try {
       // Vérification du token Top.gg
       const authHeader = req.headers.authorization;
       const expectedToken = process.env.TOKEN_TOPGG;
-
-      console.warn("🔑 Token reçu:", authHeader);
-      console.warn("🔑 Token attendu:", expectedToken);
-      console.warn("body:", JSON.stringify(req.body, null, 2));
-      console.warn("headers:", JSON.stringify(req.headers, null, 2));
 
       if (!authHeader || authHeader !== expectedToken) {
         return res.status(401).json({

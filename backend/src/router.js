@@ -85,6 +85,7 @@ router.get("/logs/type/:type", LogController.getLogsByType);
 router.get("/logs/category/:category", LogController.getLogsByCategory);
 
 // Route pour reset des streaks
+router.get("/topgg/streaks", TopggController.getStreaks);
 router.post("/topgg/reset-streaks", TopggController.resetStreaks);
 
 module.exports = router;
