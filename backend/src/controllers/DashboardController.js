@@ -90,7 +90,19 @@ class DashboardController {
 
   static getSales = async (req, res) => {
     const [sales] = await models.dashboard.getSales();
-    res.json(sales);
+    res.json({
+      status: "success",
+      data: sales
+    });
+  };
+
+  static getTopggVotes = async (req, res) => {
+    const [topggVotes] = await models.dashboard.getTopggVotes();
+    res.json({
+      status: "success",
+      count: topggVotes.length,
+      data: topggVotes
+    });
   };
 
   static getPokemonWild = async (req, res) => {

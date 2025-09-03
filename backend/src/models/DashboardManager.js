@@ -107,6 +107,16 @@ class DashboardManager extends AbstractManager {
       WHERE pw.idServer IS NOT NULL`
     );
   }
+
+  async getTopggVotes() {
+    return this.connection.query(
+      `SELECT vote_topgg.*, trainer.name AS trainerName, pokemon.name AS pokemonName
+      FROM vote_topgg
+      INNER JOIN trainer ON vote_topgg.idDiscord = trainer.idDiscord
+      INNER JOIN pokemon ON vote_topgg.reward_pokemon_id = pokemon.id
+      ORDER BY date DESC`
+    );
+  }
 }
 
 module.exports = DashboardManager;

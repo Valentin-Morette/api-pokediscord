@@ -70,6 +70,7 @@ router.get("/dashboard/bugs-ideas", DashboardController.getBugsIdeas);
 router.get("/dashboard/sales", DashboardController.getSales);
 router.get("/dashboard/trainers", DashboardController.getTrainers);
 router.get("/dashboard/pokemon-wild", DashboardController.getPokemonWild);
+router.get("/dashboard/topgg-votes", DashboardController.getTopggVotes);
 
 router.post(
   "/payment/create-checkout-session",
