@@ -347,13 +347,13 @@ class TrainerController {
             return;
           }
 
-          const moneyChance = 20;
-          const ballChance = 40;
+          const moneyChance = 45;
+          const ballChance = 85;
           const pokemonChance = 100;
           const random = Math.floor(Math.random() * 100);
 
           if (random < moneyChance) {
-            const amount = Math.floor(Math.random() * 40) * 100 + 1000; // Between 1000 and 5000
+            const amount = Math.floor(Math.random() * 35) * 100 + 1000; // Between 1000 and 4500
             models.trainer
               .updateMoney(req.params.idDiscord, amount)
               .then(() => {
@@ -366,7 +366,7 @@ class TrainerController {
               .findRandomForGift()
               .then(([pokeballs]) => {
                 const pokeball = pokeballs[0];
-                const quantity = Math.floor(Math.random() * 15) + 6;
+                const quantity = Math.floor(Math.random() * 15) + 11; // Between 11 and 25
                 models.pokeball_trainer
                   .insertMany(pokeball.id, req.params.idDiscord, quantity)
                   .then(() => {
