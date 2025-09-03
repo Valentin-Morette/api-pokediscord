@@ -49,6 +49,7 @@ router.post("/trainer/affiliate", TrainerController.affiliate);
 router.post("/trainer/bulk", TrainerController.bulkAdd);
 router.post("/trainer/pokemon/trade", TrainerController.tradePokemon);
 router.post("/trainer/premium", TrainerController.addPremium);
+router.post("/trainer/cleanup-inactive", TrainerController.cleanupInactive);
 router.delete("/trainer/:idDiscord", TrainerController.delete);
 
 router.get("/rune/:idDiscordTrainer", RuneTrainerController.readByTrainer);

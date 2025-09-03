@@ -432,6 +432,44 @@ class TrainerController {
         res.sendStatus(500);
       });
   };
+
+  static cleanupInactive = async (req, res) => {
+    try {
+      const { activeUserIds = [] } = req.body;
+
+      if (!Array.isArray(activeUserIds)) {
+        return res.status(400).json({
+          status: "error",
+          message: "activeUserIds doit être un tableau"
+        });
+      }
+
+      // Mettre à jour tous les trainers : isOnServer = 0 par défaut
+      await models.trainer.connection.query(
+        `UPDATE trainer SET isOnServer = 0`
+      );
+
+      // Si on a des activeUserIds, mettre isOnServer = 1 pour ceux-là
+      if (activeUserIds.length > 0) {
+        await models.trainer.connection.query(
+          `UPDATE trainer SET isOnServer = 1 WHERE idDiscord IN (?)`,
+          [activeUserIds]
+        );
+      }
+
+      return res.status(200).json({
+        status: "success",
+        message: "Nettoyage des trainers inactifs terminé",
+        updatedCount: activeUserIds.length
+      });
+    } catch (error) {
+      console.error("Erreur lors du nettoyage des trainers inactifs:", error);
+      return res.status(500).json({
+        status: "error",
+        message: "Erreur lors du nettoyage des trainers inactifs"
+      });
+    }
+  };
 }
 
 module.exports = TrainerController;
