@@ -470,6 +470,24 @@ class TrainerController {
       });
     }
   };
+
+  static getInactiveUsers = async (req, res) => {
+    try {
+      const [users] = await models.trainer.findInactiveUsers();
+
+      return res.status(200).json({
+        status: "success",
+        users: users,
+        count: users.length
+      });
+    } catch (error) {
+      console.error("Erreur lors de la récupération des utilisateurs inactifs:", error);
+      return res.status(500).json({
+        status: "error",
+        message: "Erreur lors de la récupération des utilisateurs inactifs"
+      });
+    }
+  };
 }
 
 module.exports = TrainerController;

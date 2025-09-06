@@ -42,6 +42,7 @@ router.post("/pokemon/wild", PokemonController.addPokemonWild);
 router.post("/pokemon/zone", PokemonController.findAllInZone);
 router.delete("/pokemon/wild", PokemonController.deletePokemonWild);
 
+router.get("/trainer/inactive-users", TrainerController.getInactiveUsers);
 router.get("/trainer/:idDiscord", TrainerController.read);
 router.get("/trainer/gift/:idDiscord", TrainerController.gift);
 router.post("/trainer", TrainerController.add);

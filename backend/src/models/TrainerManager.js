@@ -99,6 +99,21 @@ class TrainerManager extends AbstractManager {
       [idDiscord]
     );
   }
+
+  findInactiveUsers() {
+    return this.connection.query(
+      `SELECT 
+        t.idDiscord,
+        t.name,
+        t.firstServerId,
+        s.name AS serverName
+      FROM ${TrainerManager.table} t
+      LEFT JOIN servers s ON t.firstServerId = s.idServer
+      WHERE t.isOnServer = 1 AND t.money = 2500
+      ORDER BY RAND()
+      LIMIT 10`
+    );
+  }
 }
 
 module.exports = TrainerManager;
