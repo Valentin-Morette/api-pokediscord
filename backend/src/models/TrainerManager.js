@@ -110,6 +110,7 @@ class TrainerManager extends AbstractManager {
       FROM ${TrainerManager.table} t
       LEFT JOIN servers s ON t.firstServerId = s.idServer
       WHERE t.isOnServer = 1 AND t.money = 2500
+      AND s.isInstal = 1 AND s.isDelete = 0
       ORDER BY RAND()
       LIMIT 10`
     );
