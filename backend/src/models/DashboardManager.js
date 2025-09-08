@@ -63,6 +63,7 @@ class DashboardManager extends AbstractManager {
         t.isPremium, 
         t.idDiscord, 
         t.firstServerId,
+        t.isOnServer,
         s.name AS serverName
       FROM trainer t
       LEFT JOIN servers s ON t.firstServerId = s.idServer
