@@ -7,7 +7,7 @@ class LogManager extends AbstractManager {
     const { idServer, idDiscord, type, category, message } = log;
 
     const [result] = await this.connection.query(
-      `INSERT INTO ${this.table} (idServer, idDiscord, type, category, message) VALUES (?, ?, ?, ?, ?)`,
+      `INSERT INTO ${this.table} (idServer, idDiscord, type, category, message, timestamp) VALUES (?, ?, ?, ?, ?, NOW())`,
       [idServer, idDiscord, type, category, message]
     );
 

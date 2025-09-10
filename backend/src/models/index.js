@@ -2,7 +2,7 @@ const fs = require("fs");
 const mysql = require("mysql2/promise");
 const path = require("path");
 
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_TIMEZONE } = process.env;
+const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 const DB_PORT = process.env.DB_PORT || 3306;
 
 const pool = mysql.createPool({
@@ -11,7 +11,6 @@ const pool = mysql.createPool({
   password: DB_PASSWORD ?? "",
   database: DB_NAME,
   port: DB_PORT,
-  timezone: DB_TIMEZONE || '+02:00', // Fuseau horaire configurable (à changer manuellement lors des changements d'heure)
 });
 
 pool.getConnection().catch((err) => {

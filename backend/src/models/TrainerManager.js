@@ -30,7 +30,7 @@ class TrainerManager extends AbstractManager {
 
   updateLastGift(id) {
     return this.connection.query(
-      `update ${TrainerManager.table} set lastGift = now() where idDiscord = ?`,
+      `update ${TrainerManager.table} set lastGift = NOW() where idDiscord = ?`,
       [id]
     );
   }
