@@ -5,10 +5,11 @@ class VoteTopggManager extends AbstractManager {
 
   insert(voteData) {
     const { idDiscord, reward_pokemon_id, reward_is_shiny, streak } = voteData;
+    const date = new Date();
 
     return this.connection.query(
-      `INSERT INTO ${this.table} (idDiscord, reward_pokemon_id, reward_is_shiny, streak) VALUES (?, ?, ?, ?)`,
-      [idDiscord, reward_pokemon_id, reward_is_shiny, streak]
+      `INSERT INTO ${this.table} (idDiscord, date, reward_pokemon_id, reward_is_shiny, streak) VALUES (?, ?, ?, ?, ?)`,
+      [idDiscord, date, reward_pokemon_id, reward_is_shiny, streak]
     );
   }
 
