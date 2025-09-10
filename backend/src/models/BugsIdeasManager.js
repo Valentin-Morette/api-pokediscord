@@ -21,9 +21,10 @@ class BugsIdeasManager extends AbstractManager {
   }
 
   insert(bugsIdeas) {
+    const date = new Date();
     return this.connection.query(
-      `insert into ${BugsIdeasManager.table} (type, idTrainer, message) values (?, ?, ?)`,
-      [bugsIdeas.type, bugsIdeas.idTrainer, bugsIdeas.message]
+      `insert into ${BugsIdeasManager.table} (type, idTrainer, message, createDate) values (?, ?, ?, ?)`,
+      [bugsIdeas.type, bugsIdeas.idTrainer, bugsIdeas.message, date]
     );
   }
 

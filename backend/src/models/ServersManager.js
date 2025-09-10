@@ -5,15 +5,17 @@ class ServersManager extends AbstractManager {
 
   insert(servers) {
     const isInstal = servers.hasPokefarmCategory ? 1 : 0;
+    const date = new Date();
     return this.connection.query(
-      `INSERT INTO ${ServersManager.table} (idServer, name, idOwner, isInstal, isDelete)
-     VALUES (?, ?, ?, ?, 0)
+      `INSERT INTO ${ServersManager.table} (idServer, name, idOwner, joinedAt, isInstal, isDelete)
+     VALUES (?, ?, ?, ?, ?, 0)
      ON DUPLICATE KEY UPDATE
        name = VALUES(name),
        idOwner = VALUES(idOwner),
+       joinedAt = VALUES(joinedAt),
        isInstal = VALUES(isInstal),
        isDelete = 0`,
-      [servers.idServer, servers.name, servers.idOwner, isInstal]
+      [servers.idServer, servers.name, servers.idOwner, date, isInstal]
     );
   }
 

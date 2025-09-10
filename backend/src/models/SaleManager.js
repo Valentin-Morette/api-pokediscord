@@ -11,8 +11,9 @@ class SaleManager extends AbstractManager {
   }
 
   create(sale) {
+    const date = new Date();
     return this.connection.query(
-      `INSERT INTO ${SaleManager.table} (stripe_session_id	,stripe_payment_intent, discord_id, server_id, email, product_id, amount_total, quantity, currency, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO ${SaleManager.table} (stripe_session_id	,stripe_payment_intent, discord_id, server_id, email, product_id, amount_total, quantity, currency, payment_status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         sale.stripe_session_id,
         sale.stripe_payment_intent,
@@ -24,6 +25,7 @@ class SaleManager extends AbstractManager {
         sale.quantity,
         sale.currency,
         sale.payment_status,
+        date,
       ]
     );
   }
