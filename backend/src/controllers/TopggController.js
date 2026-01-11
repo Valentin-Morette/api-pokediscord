@@ -149,7 +149,7 @@ class TopggController {
                   },
                   {
                     name: "Prix de vente",
-                    value: `${pokemon[0].isShiny ? parseInt(pokemon[0].sellPrice * 3) : parseInt(pokemon[0].sellPrice)} 💰`,
+                    value: `${isShiny ? parseInt(pokemon[0].sellPrice * 3) : parseInt(pokemon[0].sellPrice)} 💰`,
                     inline: true
                   },
                   {
