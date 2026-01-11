@@ -160,6 +160,15 @@ class TopggController {
                   text: trainer[0].streak + 1 >= 7 ? "🎉 Vous avez le statut Premium ! Maintenez votre streak pour le garder." : "Votez chaque jour pour atteindre le Premium à 7 votes !"
                 },
                 timestamp: new Date().toISOString()
+              }],
+              components: [{
+                type: 1,
+                components: [{
+                  type: 2,
+                  style: 1,
+                  label: "Vendre",
+                  custom_id: `sell_vote_${pokemon[0].name}_${userId}_${isShiny ? 1 : 0}`
+                }]
               }]
             })
           });
