@@ -136,7 +136,7 @@ class TopggController {
             body: JSON.stringify({
               embeds: [{
                 title: "🎁 Récompense de vote !",
-                description: `Vous avez obtenu un **${pokemon[0].name}** ${isShiny ? "🌟" : ""} !`,
+                description: `Vous avez obtenu un **${pokemon[0].name}** ${isShiny ? "🌟" : ""} !\n\nVous avez désormais **${quantity} ${pokemon[0].name}** ${isShiny ? "🌟" : ""} !`,
                 color: isShiny ? 0xFFD700 : 0x00FF00,
                 thumbnail: {
                   url: isShiny ? pokemon[0].imgShiny : pokemon[0].img
@@ -156,17 +156,11 @@ class TopggController {
                     name: "🔥 Streak actuel",
                     value: `${trainer[0].streak + 1}/7`,
                     inline: true
-                  },
-                  {
-                    name: "\u200b",
-                    value: `Vous avez désormais **${quantity} ${pokemon[0].name}** ${isShiny ? "🌟" : ""} !`,
-                    inline: false
                   }
                 ],
                 footer: {
                   text: trainer[0].streak + 1 >= 7 ? "🎉 Vous avez le statut Premium ! Maintenez votre streak pour le garder." : "Votez chaque jour pour atteindre le Premium à 7 votes !"
-                },
-                timestamp: new Date().toISOString()
+                }
               }],
               components: [{
                 type: 1,
