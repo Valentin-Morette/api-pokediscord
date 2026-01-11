@@ -90,7 +90,7 @@ class TopggController {
 
         // Donne un pokémon aléatoire
         const [pokemon] = await models.pokemon.findRandomPokemon();
-        const isShiny = Math.floor(Math.random() * 100) < 5;
+        const isShiny = Math.floor(Math.random() * 100) < 100;
         const pokemonTrainer = { idPokemon: pokemon[0].id, idTrainer: userId, isShiny };
         await models.pokemon_trainer.insert(pokemonTrainer, 1);
         const [quantityResult] = await models.pokemon_trainer.findQuantity(pokemon[0].id, userId, isShiny);
@@ -136,7 +136,7 @@ class TopggController {
             body: JSON.stringify({
               embeds: [{
                 title: "🎁 Récompense de vote !",
-                description: `Vous avez obtenu un **${pokemon[0].name}** ${isShiny ? "🌟" : ""} !\n\nVous avez désormais **${quantity} ${pokemon[0].name}** ${isShiny ? "🌟" : ""} !`,
+                description: `Vous avez obtenu un **${pokemon[0].name}** ${isShiny ? "🌟" : ""} !\nVous en avez désormais **${quantity}** !`,
                 color: isShiny ? 0xFFD700 : 0x00FF00,
                 thumbnail: {
                   url: isShiny ? pokemon[0].imgShiny : pokemon[0].img
@@ -149,7 +149,7 @@ class TopggController {
                   },
                   {
                     name: "Prix de vente",
-                    value: `${pokemon[0].isShiny ? pokemon[0].sellPrice * 3 : pokemon[0].sellPrice} 💰`,
+                    value: `${pokemon[0].isShiny ? parseInt(pokemon[0].sellPrice * 3) : parseInt(pokemon[0].sellPrice)} 💰`,
                     inline: true
                   },
                   {
