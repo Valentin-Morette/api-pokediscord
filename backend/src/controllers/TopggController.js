@@ -90,7 +90,7 @@ class TopggController {
 
         // Donne un pokémon aléatoire
         const [pokemon] = await models.pokemon.findRandomPokemon();
-        const isShiny = Math.floor(Math.random() * 100) < 5;
+        const isShiny = Math.floor(Math.random() * 100) <= 5;
         const pokemonTrainer = { idPokemon: pokemon[0].id, idTrainer: userId, isShiny };
         await models.pokemon_trainer.insert(pokemonTrainer, 1);
         const [quantityResult] = await models.pokemon_trainer.findQuantity(pokemon[0].id, userId, isShiny);
