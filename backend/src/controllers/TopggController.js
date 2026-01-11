@@ -93,6 +93,8 @@ class TopggController {
         const isShiny = Math.floor(Math.random() * 100) < 5;
         const pokemonTrainer = { idPokemon: pokemon[0].id, idTrainer: userId, isShiny };
         await models.pokemon_trainer.insert(pokemonTrainer, 1);
+        const [quantityResult] = await models.pokemon_trainer.findQuantity(pokemon[0].id, userId, isShiny);
+        const quantity = quantityResult[0] ? quantityResult[0].quantity : 1;
         const [trainer] = await models.trainer.find(userId);
         await models.trainer.updateStreak(userId, trainer[0].streak + 1);
         await models.vote_topgg.insert({
@@ -134,7 +136,7 @@ class TopggController {
             body: JSON.stringify({
               embeds: [{
                 title: "🎁 Récompense de vote !",
-                description: `Vous avez reçu un **${pokemon[0].name}** ${isShiny ? "🌟" : ""} !`,
+                description: `Vous avez désormais **${quantity} ${pokemon[0].name}** ${isShiny ? "🌟" : ""} !`,
                 color: isShiny ? 0xFFD700 : 0x00FF00,
                 thumbnail: {
                   url: isShiny ? pokemon[0].imgShiny : pokemon[0].img
