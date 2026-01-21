@@ -7,6 +7,7 @@ class DashboardManager extends AbstractManager {
     const query = `
       SELECT 
         (SELECT COUNT(*) FROM servers) as serverCount,
+        (SELECT COUNT(*) FROM servers WHERE isInstal = 1 AND isDelete = 0) as serverInstallCount,
         (SELECT COUNT(*) FROM sale) as saleCount,
         (SELECT COUNT(*) FROM trainer) as trainerCount,
         (SELECT COUNT(*) FROM pokemon_wild WHERE idServer IS NOT NULL) as pokemonWildCount

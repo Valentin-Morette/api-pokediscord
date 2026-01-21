@@ -7,6 +7,7 @@ class DashboardController {
 
       res.json({
         servers: stats[0].serverCount,
+        serversInstall: stats[0].serverInstallCount,
         sales: stats[0].saleCount,
         trainers: stats[0].trainerCount,
         pokemonWild: stats[0].pokemonWildCount,

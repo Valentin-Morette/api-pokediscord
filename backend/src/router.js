@@ -66,6 +66,7 @@ router.get("/zone/:generation", ZoneController.readByGeneration);
 
 router.get("/recap", PokemonWildController.recap);
 
+// Routes pour le dashboard
 router.get("/dashboard/stats", DashboardController.getStats);
 router.get("/dashboard/servers", DashboardController.getServers);
 router.get("/dashboard/bugs-ideas", DashboardController.getBugsIdeas);
@@ -74,6 +75,7 @@ router.get("/dashboard/trainers", DashboardController.getTrainers);
 router.get("/dashboard/pokemon-wild", DashboardController.getPokemonWild);
 router.get("/dashboard/topgg-votes", DashboardController.getTopggVotes);
 
+// Routes pour le payment
 router.post(
   "/payment/create-checkout-session",
   StripeController.createCheckoutSession
