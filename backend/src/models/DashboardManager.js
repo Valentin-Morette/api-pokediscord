@@ -20,7 +20,8 @@ class DashboardManager extends AbstractManager {
       SELECT 
         s.*,
         t_owner.name AS ownerName,
-        COUNT(t_all.id) AS trainerCount
+        COUNT(t_all.id) AS trainerCount,
+        SUM(CASE WHEN t_all.isOnServer = 1 THEN 1 ELSE 0 END) AS trainerOnServerCount
       FROM servers s
       LEFT JOIN trainer t_owner
         ON t_owner.idDiscord = s.idOwner
