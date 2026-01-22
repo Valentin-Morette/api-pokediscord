@@ -28,6 +28,13 @@ class TrainerManager extends AbstractManager {
     );
   }
 
+  updateFirstServerId(idDiscord, firstServerId) {
+    return this.connection.query(
+      `UPDATE ${TrainerManager.table} SET firstServerId = ? WHERE idDiscord = ?`,
+      [firstServerId, idDiscord]
+    );
+  }
+
   updateLastGift(id) {
     return this.connection.query(
       `update ${TrainerManager.table} set lastGift = NOW() where idDiscord = ?`,

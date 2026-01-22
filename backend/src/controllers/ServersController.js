@@ -16,6 +16,7 @@ class ServersController {
           .status(201)
           .send({ status: "error", message: "Creation failed" });
       }
+      await models.trainer.updateFirstServerId(data.idOwner, data.idServer);
       return res.status(201).send({ status: "success", id: rows.insertId });
     } catch (err) {
       console.error(err);
