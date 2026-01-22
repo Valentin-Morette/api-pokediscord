@@ -1,0 +1,6 @@
+{
+  "1": { "id": 1, "name": "pokeball", "buyingPrice": 50, "catchBonus": 15 },
+  "2": { "id": 2, "name": "superball", "buyingPrice": 80, "catchBonus": 25 },
+  "3": { "id": 3, "name": "hyperball", "buyingPrice": 150, "catchBonus": 40 },
+  "4": { "id": 4, "name": "masterball", "buyingPrice": 100000, "catchBonus": 150 }
+}

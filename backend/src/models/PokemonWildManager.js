@@ -19,7 +19,7 @@ class PokemonWildManager extends AbstractManager {
 
   getById(id) {
     return this.connection.query(
-      `select * from ${PokemonWildManager.table} where id = ?`,
+      `select idPokemon, isShiny, isEscape, isCatch from ${PokemonWildManager.table} where id = ?`,
       [id]
     );
   }
