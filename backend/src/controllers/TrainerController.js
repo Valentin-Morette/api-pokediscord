@@ -21,23 +21,39 @@ class TrainerController {
     try {
       const { trainer, ball = [] } = req.body;
 
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      let affiliateCode = "";
-      for (let i = 0; i < 8; i += 1)
-        affiliateCode += chars[Math.floor(Math.random() * chars.length)];
+      const [existing] = await models.trainer.find(trainer.idDiscord);
+      const created = existing.length === 0;
 
-      trainer.affiliateCode = affiliateCode;
-
-      const [result] = await models.trainer.upsert(trainer);
-
-      const created = result.affectedRows === 1;
-
-      if (created && ball.length) {
-        await Promise.all(
-          ball.map((b) =>
-            models.pokeball_trainer.insert(b.id, trainer.idDiscord, b.quantity)
-          )
+      await models.trainer.upsert(trainer);
+      if (trainer.firstServerId) {
+        await models.server_trainer.upsertIsOnServer(
+          trainer.idDiscord,
+          trainer.firstServerId,
+          1
         );
+      }
+
+      if (created) {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let affiliateCode = "";
+        for (let i = 0; i < 8; i += 1) {
+          affiliateCode += chars[Math.floor(Math.random() * chars.length)];
+        }
+        trainer.affiliateCode = affiliateCode;
+
+        if (ball.length) {
+          await Promise.all(
+            ball.map((b) =>
+              models.pokeball_trainer.insert(
+                b.id,
+                trainer.idDiscord,
+                b.quantity
+              )
+            )
+          );
+
+        }
+
         return res.status(201).send({ trainer, created: true });
       }
 
@@ -98,6 +114,11 @@ class TrainerController {
          firstServerId = COALESCE(firstServerId, VALUES(firstServerId))`,
         [values]
       );
+
+      const serverTrainerValues = list
+        .filter((t) => t.firstServerId != null)
+        .map((t) => [t.idDiscord, t.firstServerId, 1]);
+      await models.server_trainer.insertBulkIsOnServer(serverTrainerValues);
 
       const newIds = list
         .map((t) => t.idDiscord)

@@ -10,6 +10,7 @@ const {
   PokemonWildController,
   BugsIdeasController,
   ServersController,
+  ServerTrainerController,
   DashboardController,
   LogController,
   TopggController,
@@ -60,6 +61,9 @@ router.post("/rune/use", PokemonController.useRune);
 router.get("/servers/uninstal", ServersController.getUninstal);
 router.post("/servers", ServersController.insert);
 router.put("/servers/:id", ServersController.update);
+
+router.put("/server-trainer/leave", ServerTrainerController.leave);
+router.post("/server-trainer/bulk", ServerTrainerController.bulk);
 
 router.get("/zone/pokemon/:name", ZoneController.findZoneByPokemonName);
 router.get("/zone/:generation", ZoneController.readByGeneration);
