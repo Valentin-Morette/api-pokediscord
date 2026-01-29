@@ -14,6 +14,7 @@ class ServerTrainerController {
 
   static bulk = async (req, res) => {
     const { rows = [] } = req.body;
+    console.log(rows);
     if (!Array.isArray(rows) || rows.length === 0) {
       return res.status(400).send({ error: "rows array is required" });
     }
