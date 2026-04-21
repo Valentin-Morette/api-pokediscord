@@ -14,6 +14,7 @@ const {
   DashboardController,
   LogController,
   TopggController,
+  UsersController,
 } = require("./controllers");
 
 const router = express.Router();
@@ -96,5 +97,8 @@ router.get("/logs/category/:category", LogController.getLogsByCategory);
 // Route pour reset des streaks
 router.get("/topgg/streaks", TopggController.getStreaks);
 router.post("/topgg/reset-streaks", TopggController.resetStreaks);
+
+// Routes pour les utilisateursrt);
+router.put("/users/:discordId", UsersController.updateUser);
 
 module.exports = router;
